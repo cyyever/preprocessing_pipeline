@@ -1,9 +1,8 @@
-from collections.abc import Callable, Iterable, Mapping
+from collections.abc import Callable, Iterable
 from typing import Any, Self
 
 import torch
 import torch.utils.data
-from cyy_naive_lib.log import log_error
 from torch.utils.data import default_collate
 
 from .common import DataExtraction

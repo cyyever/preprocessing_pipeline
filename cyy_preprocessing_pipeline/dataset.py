@@ -1,4 +1,4 @@
-from collections.abc import Generator
+from collections.abc import Generator, Iterable
 from typing import Any
 
 import torch
@@ -6,9 +6,10 @@ import torch.utils.data
 import torch.utils.data.datapipes
 import torch.utils.data.dataset
 
-from ..ml_type import OptionalIndicesType
 from .transform import DatasetTransform
 
+type IndicesType = Iterable[int]
+type OptionalIndicesType = IndicesType | None
 
 def get_dataset_size(dataset: Any) -> int:
     match dataset:
