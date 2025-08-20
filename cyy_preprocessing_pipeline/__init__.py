@@ -1,6 +1,6 @@
 from .common import strip_lines
 from .dataset import DatasetWithIndex, get_dataset_size, select_item, subset_dp
-from .json_dataset import incremental_computing, load_json
+from .json_dataset import incremental_computing, load_json, incremental_reduce
 from .pipeline import DataPipeline
 from .transform import BatchTransform, DatasetTransform, SampleTransform, Transform
 
@@ -12,8 +12,10 @@ __all__ = [
     "DataPipeline",
     "get_dataset_size",
     "incremental_computing",
+    "incremental_reduce",
     "select_item",
     "load_json",
     "subset_dp",
+    "strip_lines",
     "DatasetWithIndex",
 ]
