@@ -88,3 +88,9 @@ def replace_str(string: str, old: str, new: str) -> str:
 def target_offset(data: dict, offset: int) -> dict:
     data["target"] = data["target"] + offset
     return data
+
+
+def strip_lines(s: str) -> list[str]:
+    lines = s.splitlines()
+    lines = [line.strip() for line in lines if line.strip()]
+    return lines
