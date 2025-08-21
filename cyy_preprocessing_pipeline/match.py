@@ -7,7 +7,7 @@ def approximately_match_token(a: str, b: str, threshold: float = 0.9) -> bool:
     return len(a_set.intersection(b_set)) / len(a_set.union(b_set)) > threshold
 
 
-def match_tokens(
+def approximately_match_tokens(
     tokens: list[str], pred_tokens: list[str | tuple[Sequence[str], Sequence[str]]]
 ) -> list[str | None]:
     # case sensitive
