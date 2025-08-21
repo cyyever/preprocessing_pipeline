@@ -8,6 +8,8 @@ import torch.utils.data.datapipes
 from ..transform import DatasetTransform
 from .iob import IOBParser, IOBRecord
 
+from .json_dataset import incremental_computing, incremental_reduce, load_json
+
 type IndicesType = Iterable[int]
 type OptionalIndicesType = IndicesType | None
 
@@ -94,4 +96,12 @@ class DatasetWithIndex(DatasetTransform):
         return {"index": key, "data": value}
 
 
-__all__ = ["IOBParser", "IOBRecord", "DatasetWithIndex", "get_dataset_size"]
+__all__ = [
+    "IOBParser",
+    "IOBRecord",
+    "DatasetWithIndex",
+    "get_dataset_size",
+    "incremental_computing",
+    "load_json",
+    "incremental_reduce",
+]
