@@ -94,3 +94,9 @@ def strip_lines(s: str) -> list[str]:
     lines = s.splitlines()
     lines = [line.strip() for line in lines if line.strip()]
     return lines
+
+
+def approximately_match_token(a: str, b: str, threshold: float = 0.9) -> bool:
+    a_set = set(a.lower())
+    b_set = set(b.lower())
+    return len(a_set.intersection(b_set)) / len(a_set.union(b_set)) > threshold
