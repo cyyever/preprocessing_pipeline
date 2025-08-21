@@ -6,6 +6,7 @@ import torch.utils.data
 import torch.utils.data.datapipes
 
 from ..transform import DatasetTransform
+from .iob import IOBParser, IOBRecord
 
 type IndicesType = Iterable[int]
 type OptionalIndicesType = IndicesType | None
@@ -91,3 +92,6 @@ class DatasetWithIndex(DatasetTransform):
     def _add_index_to_map_item(cls, item) -> dict:
         key, value = item[0], item[1]
         return {"index": key, "data": value}
+
+
+__all__ = ["IOBParser", "IOBRecord", "DatasetWithIndex"]
