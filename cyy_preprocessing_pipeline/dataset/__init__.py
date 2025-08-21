@@ -94,4 +94,4 @@ class DatasetWithIndex(DatasetTransform):
         return {"index": key, "data": value}
 
 
-__all__ = ["IOBParser", "IOBRecord", "DatasetWithIndex"]
+__all__ = ["IOBParser", "IOBRecord", "DatasetWithIndex", "get_dataset_size"]
