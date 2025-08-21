@@ -7,7 +7,6 @@ import torch.utils.data.datapipes
 
 from ..transform import DatasetTransform
 from .iob import IOBParser, IOBRecord
-
 from .json_dataset import incremental_computing, incremental_reduce, load_json
 
 type IndicesType = Iterable[int]
