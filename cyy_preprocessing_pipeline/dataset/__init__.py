@@ -5,7 +5,7 @@ import torch
 import torch.utils.data
 import torch.utils.data.datapipes
 
-from .transform import DatasetTransform
+from ..transform import DatasetTransform
 
 type IndicesType = Iterable[int]
 type OptionalIndicesType = IndicesType | None
