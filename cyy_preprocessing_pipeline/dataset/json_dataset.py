@@ -30,7 +30,7 @@ def incremental_computing(
         new_value = True
     if new_value:
         with open(output_json, "w", encoding="utf8") as f:
-            json.dump(res, f, indent=2)
+            json.dump(res, f, indent=2, sort_keys=True)
 
 
 def incremental_reduce(
@@ -42,4 +42,4 @@ def incremental_reduce(
     for value in data.values():
         res = fun(value, res)
     with open(output_json, "w", encoding="utf8") as f:
-        json.dump(res, f, indent=2)
+        json.dump(res, f, indent=2, sort_keys=True)
