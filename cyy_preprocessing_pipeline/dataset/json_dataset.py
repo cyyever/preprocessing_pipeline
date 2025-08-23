@@ -14,6 +14,11 @@ def load_json(json_file: str) -> dict[str, Any]:
     return res
 
 
+def save_json(data, json_file: str) -> None:
+    with open(json_file, "w", encoding="utf8") as f:
+        json.dump(data, f, indent=2, sort_keys=True)
+
+
 def incremental_computing(
     input_json: str, output_json: str, fun: Callable[[str, Any], tuple[Any, bool]]
 ) -> None:
@@ -29,8 +34,7 @@ def incremental_computing(
             res[str(sample_id)] = result
         new_value = True
     if new_value:
-        with open(output_json, "w", encoding="utf8") as f:
-            json.dump(res, f, indent=2, sort_keys=True)
+        save_json(res, output_json)
 
 
 def incremental_reduce(
