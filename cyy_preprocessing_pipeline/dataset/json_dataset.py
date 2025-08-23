@@ -1,57 +1,72 @@
-import json
-import os
 from collections.abc import Callable
 from typing import Any
 
-
-def load_json(json_file: str) -> dict[str, Any]:
-    res = {}
-    if os.path.isfile(json_file):
-        with open(json_file, encoding="utf8") as f:
-            res = json.load(f)
-            assert isinstance(res, dict), json_file
-            res = {str(k): v for k, v in res.items()}
-    return res
+from cyy_naive_lib.storage import load_json, save_json
+from cyy_naive_lib.time_counter import TimeCounter
 
 
-def save_json(data, json_file: str, backup: bool = True) -> None:
-    hard_link = json_file + ".hard_link"
-    link_flag: bool = False
-    if backup and os.path.isfile(json_file) and not os.path.exists(hard_link):
-        os.link(json_file, hard_link)
-        link_flag = True
-        os.unlink(json_file)
-    with open(json_file, "w", encoding="utf8") as f:
-        json.dump(data, f, indent=2, sort_keys=True)
-    if link_flag:
-        os.unlink(hard_link)
-
-
-def incremental_computing(
-    input_json: str, output_json: str, fun: Callable[[str, Any], tuple[Any, bool]]
+def incremental_save(
+    output_json: str,
+    data_fun: Callable[[dict], tuple[Any, Any] | None],
+    save_second_interval: int = 10 * 60,
 ) -> None:
     new_value: bool = False
-    data = load_json(input_json)
-    assert data
     res = load_json(output_json)
-    for sample_id, value in data.items():
-        if str(sample_id) in res:
-            continue
-        result, done = fun(sample_id, value)
-        if done:
-            res[str(sample_id)] = result
+    time_counter = TimeCounter()
+    while True:
+        result_pair = data_fun(res)
+        if result_pair is None:
+            break
+        key, v = result_pair
+        assert key not in res
+        res[key] = v
         new_value = True
+        if time_counter.elapsed_seconds() >= save_second_interval:
+            save_json(res, output_json)
+            time_counter.reset_start_time()
     if new_value:
         save_json(res, output_json)
 
 
+def incremental_computing(
+    input_json: str,
+    output_json: str,
+    fun: Callable[[str, Any], tuple[Any, bool]],
+    save_second_interval: int = 10 * 60,
+) -> None:
+    data = load_json(input_json)
+
+    def data_fun(res):
+        for sample_id, value in data.items():
+            if str(sample_id) in res:
+                continue
+            result, done = fun(sample_id, value)
+            if done:
+                return str(sample_id), result
+        return None
+
+    incremental_save(
+        output_json=output_json,
+        data_fun=data_fun,
+        save_second_interval=save_second_interval,
+    )
+
+
 def incremental_reduce(
-    input_json: str, output_json: str, fun: Callable[[Any, dict], dict]
+    input_json: str,
+    output_json: str,
+    fun: Callable[[Any, dict], dict],
+    save_second_interval: int = 10 * 60,
 ) -> None:
     data = load_json(input_json)
     assert data
-    res = load_json(output_json)
-    for value in data.values():
-        res = fun(value, res)
-    with open(output_json, "w", encoding="utf8") as f:
-        json.dump(res, f, indent=2, sort_keys=True)
+
+    def data_fun(res):
+        for value in data.values():
+            res = fun(value, res)
+
+    incremental_save(
+        output_json=output_json,
+        data_fun=data_fun,
+        save_second_interval=save_second_interval,
+    )
