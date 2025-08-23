@@ -5,7 +5,11 @@ from .dataset import (
     select_item,
     subset_dp,
 )
-from .incremental_computing import incremental_computing, incremental_reduce
+from .incremental_computing import (
+    incremental_computing,
+    incremental_reduce,
+    incremental_save,
+)
 from .pipeline import DataPipeline
 from .transform import BatchTransform, DatasetTransform, SampleTransform, Transform
 
@@ -18,6 +22,7 @@ __all__ = [
     "get_dataset_size",
     "incremental_computing",
     "incremental_reduce",
+    "incremental_save",
     "select_item",
     "subset_dp",
     "strip_lines",
