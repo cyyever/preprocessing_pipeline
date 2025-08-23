@@ -5,6 +5,7 @@ from .dataset import (
     incremental_computing,
     incremental_reduce,
     load_json,
+    save_json,
     select_item,
     subset_dp,
 )
@@ -22,6 +23,7 @@ __all__ = [
     "incremental_reduce",
     "select_item",
     "load_json",
+    "save_json",
     "subset_dp",
     "strip_lines",
     "DatasetWithIndex",
