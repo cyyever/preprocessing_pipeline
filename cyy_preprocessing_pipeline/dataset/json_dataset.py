@@ -14,9 +14,17 @@ def load_json(json_file: str) -> dict[str, Any]:
     return res
 
 
-def save_json(data, json_file: str) -> None:
+def save_json(data, json_file: str, backup: bool = True) -> None:
+    hard_link = json_file + ".hard_link"
+    link_flag: bool = False
+    if backup and os.path.isfile(json_file) and not os.path.exists(hard_link):
+        os.link(json_file, hard_link)
+        link_flag = True
+        os.unlink(json_file)
     with open(json_file, "w", encoding="utf8") as f:
         json.dump(data, f, indent=2, sort_keys=True)
+    if link_flag:
+        os.unlink(hard_link)
 
 
 def incremental_computing(
