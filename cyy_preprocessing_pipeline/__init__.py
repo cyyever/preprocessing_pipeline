@@ -11,6 +11,7 @@ from .incremental_computing import (
     incremental_save,
 )
 from .pipeline import DataPipeline
+from .regex_parsing import MatchWithContext, parse_floats, parse_pattern
 from .transform import BatchTransform, DatasetTransform, SampleTransform, Transform
 
 __all__ = [
@@ -18,6 +19,9 @@ __all__ = [
     "BatchTransform",
     "SampleTransform",
     "DatasetTransform",
+    "MatchWithContext",
+    "parse_floats",
+    "parse_pattern",
     "DataPipeline",
     "get_dataset_size",
     "incremental_computing",
