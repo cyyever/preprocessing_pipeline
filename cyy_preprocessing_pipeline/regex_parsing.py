@@ -8,6 +8,7 @@ from cyy_naive_lib.log import log_info
 @dataclass
 class MatchWithContext:
     match: re.Match
+    real_match: str
     context: str
 
 
@@ -19,7 +20,7 @@ def get_match_with_context(match: re.Match) -> MatchWithContext:
     end = match.start(0)
     start = max(start - 10, 0)
     context = match.string[start : end + 10]
-    return MatchWithContext(match=match, context=context)
+    return MatchWithContext(match=match, real_match=match.group(0), context=context)
 
 
 def parse_pattern(
