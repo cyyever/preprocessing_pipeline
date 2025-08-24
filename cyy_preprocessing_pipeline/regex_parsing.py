@@ -49,4 +49,4 @@ def parse_floats(
     verifier: None | Callable[[MatchWithContext], bool] = None,
     verbose: bool = False,
 ) -> list[MatchWithContext]:
-    return parse_pattern(s=s, pattern=float_pattern, verifier=verifier)
+    return parse_pattern(s=s, pattern=float_pattern, verifier=verifier, verbose=verbose)
