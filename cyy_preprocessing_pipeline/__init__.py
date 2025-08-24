@@ -11,7 +11,7 @@ from .incremental_computing import (
     incremental_save,
 )
 from .pipeline import DataPipeline
-from .regex_parsing import MatchWithContext, parse_floats, parse_pattern
+from .regex_parsing import MatchWithContext, parse_floats, parse_pattern, float_pattern
 from .transform import BatchTransform, DatasetTransform, SampleTransform, Transform
 
 __all__ = [
@@ -29,6 +29,7 @@ __all__ = [
     "incremental_save",
     "select_item",
     "subset_dp",
+    "float_pattern",
     "strip_lines",
     "DatasetWithIndex",
 ]
