@@ -11,6 +11,9 @@ class MatchWithContext:
     context: str
 
 
+compiled_rex = {}
+
+
 def get_match_with_context(match: re.Match) -> MatchWithContext:
     start = match.start(0)
     end = match.start(0)
@@ -25,6 +28,9 @@ def parse_pattern(
     verifier: None | Callable[[MatchWithContext], bool] = None,
     verbose: bool = False,
 ) -> list[MatchWithContext]:
+    if pattern not in compiled_rex:
+        compiled_rex[pattern] = re.compile(pattern)
+    pattern = compiled_rex[pattern]
     matches = [
         get_match_with_context(match=m) for m in re.finditer(pattern=pattern, string=s)
     ]

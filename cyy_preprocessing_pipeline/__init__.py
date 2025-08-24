@@ -11,7 +11,7 @@ from .incremental_computing import (
     incremental_save,
 )
 from .pipeline import DataPipeline
-from .regex_parsing import MatchWithContext, parse_floats, parse_pattern, float_pattern
+from .regex_parsing import MatchWithContext, float_pattern, parse_floats, parse_pattern
 from .transform import BatchTransform, DatasetTransform, SampleTransform, Transform
 
 __all__ = [
