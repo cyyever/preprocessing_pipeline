@@ -1,11 +1,12 @@
+import signal
 from collections.abc import Callable, Generator
 from typing import Any
 
 from cyy_naive_lib.concurrency import ProcessPool
 from cyy_naive_lib.storage import load_json, save_json
 from cyy_naive_lib.time_counter import TimeCounter
-from .signal_handling import setup_signal_handler, check_signal
-import signal
+
+from .signal_handling import check_signal, setup_signal_handler
 
 
 def incremental_save(

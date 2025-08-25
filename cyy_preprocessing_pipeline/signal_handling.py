@@ -1,3 +1,4 @@
+import os
 import signal
 
 from cyy_naive_lib.log import log_warning
@@ -18,5 +19,5 @@ def check_signal(signum) -> bool:
 
 
 def setup_signal_handler() -> None:
-    log_warning("setup signal handler")
+    log_warning("setup signal handler in pid %s", os.getpid())
     signal.signal(signal.SIGINT, __handler)
