@@ -18,4 +18,5 @@ def check_signal(signum) -> bool:
 
 
 def setup_signal_handler() -> None:
-    signal.signal(signal.SIGSTOP, __handler)
+    log_warning("setup signal handler")
+    signal.signal(signal.SIGINT, __handler)

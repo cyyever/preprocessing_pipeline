@@ -20,7 +20,7 @@ def incremental_save(
         key, v = result_pair
         assert key not in res
         res[key] = v
-        if check_signal(signal.SIGSTOP):
+        if check_signal(signal.SIGINT):
             break
         if time_counter.elapsed_seconds() >= save_second_interval:
             save_json(res, output_json)
