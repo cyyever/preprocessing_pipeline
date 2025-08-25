@@ -4,6 +4,8 @@ from typing import Any
 from cyy_naive_lib.concurrency import ProcessPool
 from cyy_naive_lib.storage import load_json, save_json
 from cyy_naive_lib.time_counter import TimeCounter
+from .signal_handling import setup_signal_handler, check_signal
+import signal
 
 
 def incremental_save(
@@ -11,12 +13,15 @@ def incremental_save(
     data_fun: Callable[[Any], Generator[tuple[str, Any], Any, None]],
     save_second_interval: int = 10 * 60,
 ) -> None:
+    setup_signal_handler()
     res = load_json(output_json)
     time_counter = TimeCounter()
     for result_pair in data_fun(res):
         key, v = result_pair
         assert key not in res
         res[key] = v
+        if check_signal(signal.SIGSTOP):
+            break
         if time_counter.elapsed_seconds() >= save_second_interval:
             save_json(res, output_json)
             time_counter.reset_start_time()
