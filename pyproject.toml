@@ -16,7 +16,7 @@ classifiers = [
 ]
 
 dependencies = [
-  "torch; platform_system != 'Windows'",
+  "torch",
   "datasets",
   "cyy_naive_lib@git+https://github.com/cyyever/naive_python_lib.git@main",
 ]
