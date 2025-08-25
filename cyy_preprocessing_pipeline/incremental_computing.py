@@ -14,7 +14,7 @@ def incremental_save(
     data_fun: Callable[[Any], Generator[tuple[str, Any], Any, None]],
     save_second_interval: int = 10 * 60,
 ) -> None:
-    setup_signal_handler(signal.SIGINT)
+    setup_signal_handler(signal.SIGINT, overwrite=True)
     res = load_json(output_json)
     time_counter = TimeCounter()
     for result_pair in data_fun(res):

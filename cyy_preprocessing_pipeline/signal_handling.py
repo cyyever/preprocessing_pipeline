@@ -21,9 +21,11 @@ def combine_handle(handler1, handler2, signum, frame):
     handler2(signum, frame)
 
 
-def setup_signal_handler(signum) -> None:
+def setup_signal_handler(signum, overwrite: bool) -> None:
     log_warning("setup signal handler in pid %s", os.getpid())
-    previous_handler = signal.getsignal(signum)
+    previous_handler = None
+    if not overwrite:
+        previous_handler = signal.getsignal(signum)
     if previous_handler is not None and not isinstance(previous_handler, int):
         signal.signal(
             signum,
