@@ -2,9 +2,7 @@ import signal
 from collections.abc import Callable, Generator
 from typing import Any
 
-from cyy_naive_lib.concurrency import ProcessPool
-from cyy_naive_lib.storage import load_json, save_json
-from cyy_naive_lib.time_counter import TimeCounter
+from cyy_naive_lib import Expected, ProcessPool, TimeCounter, load_json, save_json
 
 from .signal_handling import check_signal, setup_signal_handler
 
@@ -35,7 +33,7 @@ executor_pool: ProcessPool | None = None
 def incremental_computing(
     input_json: str,
     output_json: str,
-    fun: Callable[[str, Any], tuple[Any, bool]],
+    fun: Callable[[str, Any], Expected],
     save_second_interval: int = 10 * 60,
     multiprocessing: bool = False,
 ) -> None:
@@ -46,12 +44,12 @@ def incremental_computing(
         executor_pool = ProcessPool()
 
     def wrapped_fun(sample_id, value):
-        result, done = fun(sample_id, value)
-        if done:
-            return str(sample_id), result
+        expected = fun(sample_id, value)
+        if expected.is_ok():
+            return str(sample_id), expected.value()
         return None
 
-    def data_fun(previous_results) -> Generator[tuple[str, Any], Any, None]:
+    def data_fun(previous_results: Any) -> Generator[tuple[str, Any], Any, None]:
         assert isinstance(previous_results, dict)
         for sample_id, value in data.items():
             if str(sample_id) in previous_results:
