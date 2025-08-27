@@ -17,9 +17,21 @@ from .incremental_computing import (
 )
 from .pipeline import DataPipeline
 from .regex_parsing import MatchWithContext, float_pattern, parse_floats, parse_pattern
+from .tensor import (
+    cat_tensor_dict,
+    cat_tensors_to_vector,
+    recursive_tensor_op,
+    tensor_clone,
+    tensor_to,
+)
 from .transform import BatchTransform, DatasetTransform, SampleTransform, Transform
 
 __all__ = [
+    "cat_tensor_dict",
+    "cat_tensors_to_vector",
+    "recursive_tensor_op",
+    "tensor_clone",
+    "tensor_to",
     "IndicesType",
     "DatasetSampler",
     "DatasetUtil",
