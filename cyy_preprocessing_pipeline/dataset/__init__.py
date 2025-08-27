@@ -8,7 +8,7 @@ from .common import (
 )
 from .iob import IOBParser, IOBRecord
 from .local_file import load_local_files
-from .sampler import DatasetSampler
+from .sampler import DatasetSampler, ClassificationDatasetSampler
 from .util import DatasetUtil
 
 __all__ = [
@@ -16,6 +16,7 @@ __all__ = [
     "IOBRecord",
     "DatasetWithIndex",
     "OptionalIndicesType",
+    "ClassificationDatasetSampler",
     "subset_dp",
     "IndicesType",
     "select_item",
