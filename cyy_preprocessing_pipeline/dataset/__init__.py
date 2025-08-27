@@ -1,3 +1,5 @@
+import json
+import os
 from collections.abc import Generator, Iterable
 from typing import Any
 
@@ -7,6 +9,9 @@ import torch.utils.data.datapipes
 
 from ..transform import DatasetTransform
 from .iob import IOBParser, IOBRecord
+from .local_file import load_local_files
+from .sampler import DatasetSampler
+from .util import DatasetUtil
 
 type IndicesType = Iterable[int]
 type OptionalIndicesType = IndicesType | None
@@ -99,4 +104,7 @@ __all__ = [
     "IOBRecord",
     "DatasetWithIndex",
     "get_dataset_size",
+    "DatasetSampler",
+    "DatasetUtil",
+    "load_local_files",
 ]
