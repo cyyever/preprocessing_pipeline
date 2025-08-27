@@ -13,7 +13,6 @@ type IndicesType = Iterable[int]
 type OptionalIndicesType = IndicesType | None
 
 
-
 class DatasetUtil:
     def __init__(
         self,

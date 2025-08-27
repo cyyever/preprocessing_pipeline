@@ -1,5 +1,6 @@
 from .common import strip_lines
 from .dataset import (
+    ClassificationDatasetSampler,
     DatasetSampler,
     DatasetUtil,
     DatasetWithIndex,
