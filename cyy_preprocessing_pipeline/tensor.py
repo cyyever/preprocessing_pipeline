@@ -10,7 +10,7 @@ from cyy_naive_lib.algorithm.mapping_op import (
     get_mapping_values_by_key_order,
 )
 
-from .ml_type import TensorDict
+type TensorDict = dict[str, torch.Tensor]
 
 
 def cat_tensors_to_vector(tensors: Iterable) -> torch.Tensor:
