@@ -53,5 +53,6 @@ __all__ = [
     "subset_dp",
     "float_pattern",
     "strip_lines",
+    "ClassificationDatasetSampler",
     "DatasetWithIndex",
 ]

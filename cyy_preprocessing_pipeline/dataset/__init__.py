@@ -8,7 +8,7 @@ from .common import (
 )
 from .iob import IOBParser, IOBRecord
 from .local_file import load_local_files
-from .sampler import DatasetSampler, ClassificationDatasetSampler
+from .sampler import ClassificationDatasetSampler, DatasetSampler
 from .util import DatasetUtil
 
 __all__ = [
