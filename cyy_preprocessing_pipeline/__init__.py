@@ -1,9 +1,12 @@
 from .common import strip_lines
 from .dataset import (
+    DatasetSampler,
+    DatasetUtil,
     DatasetWithIndex,
     IndicesType,
     OptionalIndicesType,
     get_dataset_size,
+    load_local_files,
     select_item,
     subset_dp,
 )
@@ -18,6 +21,9 @@ from .transform import BatchTransform, DatasetTransform, SampleTransform, Transf
 
 __all__ = [
     "IndicesType",
+    "DatasetSampler",
+    "DatasetUtil",
+    "load_local_files",
     "OptionalIndicesType",
     "Transform",
     "BatchTransform",
