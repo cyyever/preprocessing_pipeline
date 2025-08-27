@@ -244,3 +244,7 @@ class DatasetSampler:
             if indices:
                 resulting_indices = callback(label=label, indices=indices)
                 excluded_indices.update(resulting_indices)
+
+
+class ClassificationDatasetSampler(DatasetSampler):
+    pass
