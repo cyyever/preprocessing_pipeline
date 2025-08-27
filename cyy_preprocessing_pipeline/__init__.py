@@ -1,6 +1,8 @@
 from .common import strip_lines
 from .dataset import (
     DatasetWithIndex,
+    IndicesType,
+    OptionalIndicesType,
     get_dataset_size,
     select_item,
     subset_dp,
@@ -15,6 +17,8 @@ from .regex_parsing import MatchWithContext, float_pattern, parse_floats, parse_
 from .transform import BatchTransform, DatasetTransform, SampleTransform, Transform
 
 __all__ = [
+    "IndicesType",
+    "OptionalIndicesType",
     "Transform",
     "BatchTransform",
     "SampleTransform",
