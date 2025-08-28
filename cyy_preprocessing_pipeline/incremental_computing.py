@@ -14,6 +14,8 @@ def incremental_save(
 ) -> None:
     setup_signal_handler(signal.SIGINT, overwrite=True)
     res = load_json(output_json)
+    assert isinstance(res, dict), output_json
+    res = {str(k): v for k, v in res.items()}
     time_counter = TimeCounter()
     for result_pair in data_fun(res):
         key, v = result_pair
@@ -39,6 +41,8 @@ def incremental_computing(
 ) -> None:
     global executor_pool
     data = load_json(input_json)
+    assert isinstance(data, dict), output_json
+    data = {str(k): v for k, v in data.items()}
 
     if multiprocessing and executor_pool is None:
         executor_pool = ProcessPool()
@@ -73,24 +77,3 @@ def incremental_computing(
         data_fun=data_fun,
         save_second_interval=save_second_interval,
     )
-
-
-def incremental_reduce(
-    input_json: str,
-    output_json: str,
-    fun: Callable[[Any, dict], dict],
-    save_second_interval: int = 10 * 60,
-) -> None:
-    raise NotImplementedError("abc")
-    # data = load_json(input_json)
-    # assert data
-    #
-    # def data_fun(previous_results):
-    #     for value in data.values():
-    #         res = fun(value, previous_results)
-    #
-    # incremental_save(
-    #     output_json=output_json,
-    #     data_fun=data_fun,
-    #     save_second_interval=save_second_interval,
-    # )

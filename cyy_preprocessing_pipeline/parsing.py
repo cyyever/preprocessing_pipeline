@@ -1,4 +1,4 @@
-from collections.abc import Sequence
+from collections.abc import Iterable
 
 import bs4
 
@@ -10,7 +10,7 @@ def approximately_match_token(a: str, b: str, threshold: float = 0.9) -> bool:
 
 
 def approximately_match_tokens(
-    tokens: list[str], pred_tokens: list[str | tuple[Sequence[str], Sequence[str]]]
+    tokens: list[str], pred_tokens: list[str | tuple[Iterable[str], Iterable[str]]]
 ) -> list[str | None]:
     # case sensitive
     if not tokens:
