@@ -6,6 +6,7 @@ from .common import (
     select_item,
     subset_dp,
 )
+from .hg_util import HFDatasetUtil
 from .iob import IOBParser, IOBRecord
 from .local_file import load_local_files
 from .sampler import ClassificationDatasetSampler, DatasetSampler
@@ -18,6 +19,7 @@ __all__ = [
     "OptionalIndicesType",
     "ClassificationDatasetSampler",
     "subset_dp",
+    "HFDatasetUtil",
     "IndicesType",
     "select_item",
     "get_dataset_size",

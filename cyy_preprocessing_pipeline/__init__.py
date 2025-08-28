@@ -4,6 +4,7 @@ from .dataset import (
     DatasetSampler,
     DatasetUtil,
     DatasetWithIndex,
+    HFDatasetUtil,
     IndicesType,
     OptionalIndicesType,
     get_dataset_size,
@@ -13,7 +14,6 @@ from .dataset import (
 )
 from .incremental_computing import (
     incremental_computing,
-    incremental_reduce,
     incremental_save,
 )
 from .pipeline import DataPipeline
@@ -48,12 +48,12 @@ __all__ = [
     "DataPipeline",
     "get_dataset_size",
     "incremental_computing",
-    "incremental_reduce",
     "incremental_save",
     "select_item",
     "subset_dp",
     "float_pattern",
     "strip_lines",
     "ClassificationDatasetSampler",
+    "HFDatasetUtil",
     "DatasetWithIndex",
 ]
