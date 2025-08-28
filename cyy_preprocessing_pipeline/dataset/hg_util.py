@@ -44,7 +44,7 @@ class HFDatasetUtil(Decorator[datasets.Dataset]):
             k = example[matched_key]
             value = column.pop(k, None)
             if value is None:
-                column.pop(str(k), None)
+                value = column.pop(str(k), None)
             example[column_name] = column.pop(k, None)
             return example
 
