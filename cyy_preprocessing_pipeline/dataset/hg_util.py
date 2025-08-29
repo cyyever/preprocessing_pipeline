@@ -30,9 +30,9 @@ class HFDatasetUtil(Decorator[datasets.Dataset]):
     def set_dataset(self, dataset: datasets.Dataset):
         self._decorator_object = dataset
 
-    def filter(self, **kwargs: Any):
+    def filter(self, *args: Any, **kwargs: Any):
         new_instance = copy.copy(self)
-        new_instance.set_dataset(self.dataset.filter(**kwargs))
+        new_instance.set_dataset(self.dataset.filter(*args, **kwargs))
         return new_instance
 
     def add_column_from_dict(
