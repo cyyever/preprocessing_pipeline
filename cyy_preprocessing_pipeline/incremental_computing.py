@@ -1,3 +1,4 @@
+import os
 import signal
 from collections.abc import Callable, Generator
 from typing import Any
@@ -13,7 +14,9 @@ def incremental_save(
     save_second_interval: int = 10 * 60,
 ) -> None:
     setup_signal_handler(signal.SIGINT, overwrite=True)
-    res = load_json(output_json)
+    res = {}
+    if os.path.isfile(output_json):
+        res = load_json(output_json)
     assert isinstance(res, dict), output_json
     res = {str(k): v for k, v in res.items()}
     time_counter = TimeCounter()
@@ -77,3 +80,23 @@ def incremental_computing(
         data_fun=data_fun,
         save_second_interval=save_second_interval,
     )
+
+
+# def merge_jsons(
+#     input_json: str,
+#     merged_json: str,
+#     *args,
+#     **kwargs,
+# ) -> None:
+#     data = load_json(input_json)
+#
+#     def merge_fun(item):
+#         pass
+#
+#     incremental_computing(
+#         input_json=output_json,
+#         output_json=merge_json,
+#         data_fun=merge_fun,
+#         *args,
+#         **kwargs,
+#     )
