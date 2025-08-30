@@ -57,7 +57,9 @@ class HFDatasetUtil(Decorator[datasets.Dataset]):
         return np.array(col)
 
     def get_column_metrics(self, column_name: str) -> SamplesMetrics:
-        return SamplesMetrics(samples=self.get_numerical_column(column_name))
+        return SamplesMetrics(
+            samples=self.get_numerical_column(column_name), label=column_name
+        )
 
     def get_columns_metrics(self, column_names: list[str]) -> SamplesMetricsGroup:
         return SamplesMetricsGroup(
