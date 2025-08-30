@@ -6,7 +6,7 @@ from typing import Any
 import datasets
 import numpy as np
 from cyy_naive_lib import Decorator, load_json
-from cyy_naive_lib.metric import SamplesMetrics
+from cyy_naive_lib.metric import SamplesMetrics, SamplesMetricsGroup
 
 
 class HFDatasetUtil(Decorator[datasets.Dataset]):
@@ -58,6 +58,11 @@ class HFDatasetUtil(Decorator[datasets.Dataset]):
 
     def get_column_metrics(self, column_name: str) -> SamplesMetrics:
         return SamplesMetrics(samples=self.get_numerical_column(column_name))
+
+    def get_columns_metrics(self, column_names: list[str]) -> SamplesMetricsGroup:
+        return SamplesMetricsGroup(
+            elements=[self.get_column_metrics(k) for k in column_names]
+        )
 
     def count_column(self, column_name: str) -> Counter:
         return Counter(self.dataset[column_name])
