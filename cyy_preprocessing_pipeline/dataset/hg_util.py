@@ -79,7 +79,7 @@ class HFDatasetUtil(Decorator[datasets.Dataset]):
         )
         if isinstance(column_names, dict):
             for col_name, metrics in zip(
-                real_column_names, metrics_group.elements, strict=False
+                real_column_names, group.elements, strict=False
             ):
                 metrics.label = column_names[col_name]
 
