@@ -35,9 +35,7 @@ class HFDatasetUtil(Decorator[datasets.Dataset]):
         new_instance.set_dataset(self.dataset.filter(*args, **kwargs))
         return new_instance
 
-    def add_column_from_dict(
-        self, column: dict, column_name: str, matched_key: str
-    ) -> None:
+    def add_column_from_dict(self, column: dict, column_name: str, matched_key: str) -> None:
         assert column
 
         def impl(example):
@@ -57,14 +55,21 @@ class HFDatasetUtil(Decorator[datasets.Dataset]):
         return np.array(col)
 
     def get_column_metrics(self, column_name: str) -> SamplesMetrics:
-        return SamplesMetrics(
-            samples=self.get_numerical_column(column_name), label=column_name
-        )
+        return SamplesMetrics(samples=self.get_numerical_column(column_name), label=column_name)
 
-    def get_columns_metrics(self, column_names: list[str]) -> SamplesMetricsGroup:
-        return SamplesMetricsGroup(
-            elements=[self.get_column_metrics(k) for k in column_names]
-        )
+    def get_columns_metrics(self, column_names: list[str] | dict[str, str]) -> SamplesMetricsGroup:
+        real_column_names = []
+        if isinstance(column_names, dict):
+            real_column_names = list(column_names.keys())
+        else:
+            real_column_names = column_names
+
+        group = SamplesMetricsGroup(elements=[self.get_column_metrics(k) for k in real_column_names])
+        if isinstance(column_names, dict):
+            for col_name, metrics in zip(real_column_names, metrics_group.elements, strict=False):
+                metrics.label = column_names[col_name]
+
+        return group
 
     def count_column(self, column_name: str) -> Counter:
         return Counter(self.dataset[column_name])
