@@ -153,7 +153,7 @@ def assemble_tensors(data: Any) -> tuple[torch.Tensor | None, Any]:
 def disassemble_tensor(
     concatenated_tensor: torch.Tensor, data: Any, clone: bool = True
 ) -> Any:
-    def fun(data: torch.Tensor) -> Any:
+    def fun(data: Any) -> Any:
         if len(data) == 1:
             return data[0]
         shape, offset = data

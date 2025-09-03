@@ -42,7 +42,7 @@ def incremental_computing(
     save_second_interval: int = 10 * 60,
     multiprocessing: bool = False,
 ) -> None:
-    global executor_pool
+    global executor_pool # noqa
     data = load_json(input_json)
     assert isinstance(data, dict), output_json
     data = {str(k): v for k, v in data.items()}

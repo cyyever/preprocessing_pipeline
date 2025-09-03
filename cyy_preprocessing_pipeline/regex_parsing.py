@@ -31,9 +31,10 @@ def parse_pattern(
 ) -> list[MatchWithContext]:
     if pattern not in compiled_rex:
         compiled_rex[pattern] = re.compile(pattern)
-    pattern = compiled_rex[pattern]
+    compiled_pattern = compiled_rex[pattern]
     matches = [
-        get_match_with_context(match=m) for m in re.finditer(pattern=pattern, string=s)
+        get_match_with_context(match=m)
+        for m in re.finditer(pattern=compiled_pattern, string=s)
     ]
     if not matches:
         if verbose:
