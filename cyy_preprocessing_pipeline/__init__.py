@@ -20,6 +20,9 @@ from .pipeline import DataPipeline
 from .regex_parsing import MatchWithContext, float_pattern, parse_floats, parse_pattern
 from .tensor import (
     cat_tensor_dict,
+    assemble_tensors,
+    dot_product,
+    disassemble_tensor,
     cat_tensors_to_vector,
     recursive_tensor_op,
     tensor_clone,
@@ -56,4 +59,7 @@ __all__ = [
     "ClassificationDatasetSampler",
     "HFDatasetUtil",
     "DatasetWithIndex",
+    "assemble_tensors",
+    "dot_product",
+    "disassemble_tensor",
 ]
