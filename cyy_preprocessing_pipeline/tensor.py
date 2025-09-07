@@ -5,9 +5,12 @@ from typing import Any
 
 import dill
 import torch
-from cyy_naive_lib.algorithm.mapping_op import (
+from cyy_naive_lib import (
     get_mapping_items_by_key_order,
     get_mapping_values_by_key_order,
+    recursive_mutable_op,
+    recursive_op,
+    Expected,
 )
 
 type TensorDict = dict[str, torch.Tensor]
@@ -86,42 +89,44 @@ def recursive_tensor_op(data: Any, fun: Callable, **kwargs: Any) -> Any:
 def tensor_to(
     data: Any, non_blocking: bool = True, check_slowdown: bool = False, **kwargs: Any
 ) -> Any:
-    def fun(data, check_slowdown, **kwargs):
-        if check_slowdown:
-            device = kwargs.get("device")
-            non_blocking = kwargs.get("non_blocking", True)
-            if (
-                str(data.device) == "cpu"
-                and device is not None
-                and str(device) != str(data.device)
-            ):
-                # if not data.is_pinned():
-                #     raise RuntimeError("tensor is not pinned")
-                if not non_blocking:
-                    raise RuntimeError(
-                        "copy is blocking",
-                    )
-            else:
-                if device is not None and not kwargs.get("non_blocking", True):
-                    raise RuntimeError(
-                        "device to device copy is blocking",
-                    )
-            assert str(device) != str(data.device)
-        return data.to(**kwargs)
+    def fun(data):
+        if isinstance(data, torch.Tensor):
+            if check_slowdown:
+                device = kwargs.get("device")
+                if (
+                    str(data.device) == "cpu"
+                    and device is not None
+                    and str(device) != str(data.device)
+                ):
+                    # if not data.is_pinned():
+                    #     raise RuntimeError("tensor is not pinned")
+                    if not non_blocking:
+                        raise RuntimeError(
+                            "copy is blocking",
+                        )
+                else:
+                    if device is not None and not kwargs.get("non_blocking", True):
+                        raise RuntimeError(
+                            "device to device copy is blocking",
+                        )
+                assert str(device) != str(data.device)
+            return Expected.ok(data.to(**kwargs))
+        return Expected.not_ok()
 
-    return recursive_tensor_op(
-        data, fun, non_blocking=non_blocking, check_slowdown=check_slowdown, **kwargs
-    )
+    return recursive_mutable_op(data, fun)
 
 
-def tensor_clone(data: Any, detach: bool = True) -> Any:
-    def fun(data, detach):
-        new_data = data.clone()
-        if detach:
-            new_data = new_data.detach()
-        return new_data
+def tensor_clone[T](data: T, detach: bool = True) -> T:
+    def fun(data):
+        if isinstance(data, torch.Tensor):
+            new_data = data
+            if detach:
+                new_data = new_data.detach()
+            new_data = new_data.clone()
+            return Expected.ok(new_data)
+        return Expected.not_ok()
 
-    return recursive_tensor_op(data, fun, detach=detach)
+    return recursive_mutable_op(data, fun)
 
 
 def assemble_tensors(data: Any) -> tuple[torch.Tensor | None, Any]:
