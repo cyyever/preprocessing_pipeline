@@ -19,11 +19,11 @@ from .incremental_computing import (
 from .pipeline import DataPipeline
 from .regex_parsing import MatchWithContext, float_pattern, parse_floats, parse_pattern
 from .tensor import (
-    cat_tensor_dict,
     assemble_tensors,
-    dot_product,
-    disassemble_tensor,
+    cat_tensor_dict,
     cat_tensors_to_vector,
+    disassemble_tensor,
+    dot_product,
     recursive_tensor_op,
     tensor_clone,
     tensor_to,

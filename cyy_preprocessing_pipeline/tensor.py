@@ -15,15 +15,17 @@ from cyy_naive_lib import (
 type TensorDict = dict[str, torch.Tensor]
 
 
-def cat_tensors_to_vector(tensors: Iterable) -> torch.Tensor:
+def cat_tensors_to_vector(tensors: Iterable[torch.Tensor]) -> torch.Tensor:
     return torch.cat([t.view(-1) for t in tensors])
 
 
-def cat_tensor_dict(tensor_dict: dict) -> torch.Tensor:
+def cat_tensor_dict(tensor_dict: dict[Any, torch.Tensor]) -> torch.Tensor:
     return cat_tensors_to_vector(get_mapping_values_by_key_order(tensor_dict))
 
 
-def decompose_like_tensor_dict(tensor_dict: dict, tensor: torch.Tensor) -> dict:
+def decompose_like_tensor_dict(
+    tensor_dict: dict[Any, torch.Tensor], tensor: torch.Tensor
+) -> dict[Any, torch.Tensor]:
     result = {}
     bias: int = 0
     for key, component in get_mapping_items_by_key_order(tensor_dict):
@@ -85,9 +87,9 @@ def recursive_tensor_op(data: Any, fun: Callable, **kwargs: Any) -> Any:
     return data
 
 
-def tensor_to(
-    data: Any, non_blocking: bool = True, check_slowdown: bool = False, **kwargs: Any
-) -> Any:
+def tensor_to[T](
+    data: T, non_blocking: bool = True, check_slowdown: bool = False, **kwargs: Any
+) -> T:
     def fun(data):
         if isinstance(data, torch.Tensor):
             if check_slowdown:
@@ -97,8 +99,6 @@ def tensor_to(
                     and device is not None
                     and str(device) != str(data.device)
                 ):
-                    # if not data.is_pinned():
-                    #     raise RuntimeError("tensor is not pinned")
                     if not non_blocking:
                         raise RuntimeError(
                             "copy is blocking",
