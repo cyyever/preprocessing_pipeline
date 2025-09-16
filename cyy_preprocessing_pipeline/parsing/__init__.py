@@ -2,6 +2,7 @@ from collections.abc import Iterable, Sequence
 
 import bs4
 
+from .parse_score import parse_score
 from .regex_parsing import parse_floats, parse_pattern
 
 
@@ -82,4 +83,5 @@ __all__ = [
     "parse_html_tag",
     "parse_floats",
     "parse_pattern",
+    "parse_score",
 ]

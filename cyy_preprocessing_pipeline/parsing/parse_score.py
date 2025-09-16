@@ -5,7 +5,6 @@ from cyy_naive_lib import Expected
 from cyy_naive_lib.log import log_error
 
 from ..common import strip_lines
-from ..incremental_computing import incremental_computing
 from .regex_parsing import (
     MatchWithContext,
     float_pattern,
@@ -124,14 +123,3 @@ def parse_score(sample_id: str, raw_score: str) -> Expected[float]:
     score_number = float(res.real_match)
     assert 0 <= score_number <= 1, res.real_match
     return Expected.ok(value=score_number)
-
-
-if __name__ == "__main__":
-    input_json = "/home/cyy/visual_sft/evaluate_qwen_2.5_3B_sft_nohint_and_evaluate_nohint_scores.json"
-    output_json = input_json.removesuffix(".json") + "_accurate.json"
-    incremental_computing(
-        input_json,
-        output_json,
-        parse_score,
-        save_second_interval=5,
-    )
