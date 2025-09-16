@@ -3,9 +3,10 @@ from collections import Counter
 
 from cyy_naive_lib import Expected
 from cyy_naive_lib.log import log_error
-from cyy_preprocessing_pipeline import incremental_computing
-from cyy_preprocessing_pipeline.common import strip_lines
-from cyy_preprocessing_pipeline.regex_parsing import (
+
+from ..common import strip_lines
+from ..incremental_computing import incremental_computing
+from .regex_parsing import (
     MatchWithContext,
     float_pattern,
     parse_floats,
@@ -13,18 +14,19 @@ from cyy_preprocessing_pipeline.regex_parsing import (
 )
 
 
-def is_valid_score(m: MatchWithContext) -> bool:
-    def refine_match(s: str) -> str:
-        if "/" in s:
-            idx = s.find("/")
-            s = s[:idx]
-        if s.endswith(".0"):
-            s.removesuffix(".0")
-        if "00" in s:
-            # return an invalid number
-            return "10000000"
-        return s
+def refine_match(s: str) -> str:
+    if "/" in s:
+        idx = s.find("/")
+        s = s[:idx]
+    if s.endswith(".0"):
+        s.removesuffix(".0")
+    if "00" in s:
+        # return an invalid number
+        return "10000000"
+    return s
 
+
+def is_valid_score(m: MatchWithContext) -> bool:
     try:
         score_number = float(refine_match(m.real_match))
         assert 0 <= score_number <= 1
