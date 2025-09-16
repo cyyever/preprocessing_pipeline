@@ -2,6 +2,8 @@ from collections.abc import Iterable, Sequence
 
 import bs4
 
+from .regex_parsing import parse_floats, parse_pattern
+
 
 def approximately_match_token(a: str, b: str, threshold: float = 0.9) -> bool:
     a_set = set(a.lower())
@@ -67,3 +69,17 @@ def parsing_html_tag(html: str, preferred_tag: str) -> str:
             case _:
                 raise NotImplementedError(child)
     return result
+
+
+def parse_html_tag(html: str, preferred_tag: str) -> str:
+    return parsing_html_tag(html=html, preferred_tag=preferred_tag)
+
+
+__all__ = [
+    "approximately_match_token",
+    "approximately_match_tokens",
+    "parsing_html_tag",
+    "parse_html_tag",
+    "parse_floats",
+    "parse_pattern",
+]
