@@ -16,8 +16,8 @@ from .incremental_computing import (
     incremental_computing,
     incremental_save,
 )
+from .parsing import MatchWithContext, parse_floats, parse_pattern
 from .pipeline import DataPipeline
-from .regex_parsing import MatchWithContext, float_pattern, parse_floats, parse_pattern
 from .tensor import (
     assemble_tensors,
     cat_tensor_dict,
@@ -56,7 +56,6 @@ __all__ = [
     "incremental_save",
     "select_item",
     "subset_dp",
-    "float_pattern",
     "strip_lines",
     "ClassificationDatasetSampler",
     "HFDatasetUtil",
