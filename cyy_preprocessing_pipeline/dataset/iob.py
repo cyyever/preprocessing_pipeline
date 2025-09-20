@@ -4,18 +4,6 @@ from collections import Counter
 from .parser import Parser
 
 
-class JSONRecord:
-    def __init__(self, json_content: dict) -> None:
-        self.__json_content = json_content
-
-    def to_json(self) -> dict:
-        return self.__json_content
-
-    @property
-    def token_tags(self) -> list[str]:
-        return self.to_json()["tags"]
-
-
 class IOBRecord:
     background_tag = "O"
 
@@ -53,7 +41,8 @@ class IOBRecord:
                 self.__tokens[-1][0].append(token)
             else:
                 self.__tokens.pop()
-                # In principle, this should be I tag, but it's changed to B-tag for easier evaluation
+                # In principle, this should be I tag,
+                # but it is changed to B-tag for easier evaluation
                 self.__token_tags.pop()
                 self.__token_tags.append("B-" + token_tag[2:])
                 self.__tokens.append(([token], self.__last_tag[2:]))
@@ -150,6 +139,18 @@ class IOBParser(Parser):
         if record.tokens:
             results.append(record)
         return results
+
+
+class JSONRecord:
+    def __init__(self, json_content: dict) -> None:
+        self.__json_content = json_content
+
+    def to_json(self) -> dict:
+        return self.__json_content
+
+    @property
+    def token_tags(self) -> list[str]:
+        return self.to_json()["tags"]
 
 
 class JSONParser(Parser):
