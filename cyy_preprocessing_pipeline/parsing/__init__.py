@@ -32,7 +32,7 @@ def approximately_match_tokens(
                 if approximately_match_token(token, element):
                     has_match = True
                     tokens = tokens[1:]
-                    tags.append(element)
+                    tags.append(None)
                     pred_tokens = pred_tokens[idx + 1 :]
                     break
             else:

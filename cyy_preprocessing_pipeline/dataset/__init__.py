@@ -7,7 +7,7 @@ from .common import (
     subset_dp,
 )
 from .hg_util import HFDatasetUtil
-from .iob import IOBParser, IOBRecord
+from .iob import IOBParser, IOBRecord, JSONParser, JSONRecord
 from .local_file import load_local_files
 from .sampler import ClassificationDatasetSampler, DatasetSampler
 from .util import DatasetUtil
@@ -19,6 +19,8 @@ __all__ = [
     "OptionalIndicesType",
     "ClassificationDatasetSampler",
     "subset_dp",
+    "JSONRecord",
+    "JSONParser",
     "HFDatasetUtil",
     "IndicesType",
     "select_item",
