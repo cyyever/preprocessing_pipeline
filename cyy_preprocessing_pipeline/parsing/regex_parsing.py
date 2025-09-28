@@ -49,7 +49,7 @@ def parse_pattern(
     return matches
 
 
-float_pattern = r"(?:[-+]?[0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?)"
+float_pattern = r"\b(?:[-+]?[0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?)"
 
 
 def parse_floats(

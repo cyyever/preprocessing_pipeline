@@ -13,21 +13,26 @@ from .regex_parsing import (
 )
 
 
-def refine_match(s: str) -> str:
+def refine_match(m: MatchWithContext) -> str:
+    s = m.real_match
+    context = m.context
+    # return an invalid number
+    invalid_score = "10000000"
     if "/" in s:
         idx = s.find("/")
         s = s[:idx]
+    if f"({s})" in context:
+        return invalid_score
     if s.endswith(".0"):
         s.removesuffix(".0")
     if "00" in s:
-        # return an invalid number
-        return "10000000"
+        return invalid_score
     return s
 
 
 def is_valid_score(m: MatchWithContext) -> bool:
     try:
-        score_number = float(refine_match(m.real_match))
+        score_number = float(refine_match(m))
         assert 0 <= score_number <= 1
         return True
     except BaseException:
@@ -51,24 +56,23 @@ def __parse_score_impl(s: str) -> MatchWithContext | list[MatchWithContext] | No
     if not matches:
         return None
     for m in matches:
-        m.real_match = refine_match(m.real_match)
+        m.real_match = refine_match(m)
     unique_scores = {m.real_match for m in matches}
     if len(unique_scores) == 1:
-        if matches[0].match.start() == 0:
-            return matches[0]
-
-        if "0" in unique_scores or "0.0" in unique_scores:
-            return matches[0]
-        if "1" in unique_scores or "1.0" in unique_scores:
-            return matches[0]
+        # if matches[0].match.start() == 0:
+        #     return matches[0]
+        # if "0" in unique_scores or "0.0" in unique_scores:
+        #     return matches[0]
+        # if "1" in unique_scores or "1.0" in unique_scores:
+        #     return matches[0]
         if "score" in matches[0].context:
             return matches[0]
-        if "*" in matches[0].context:
-            return matches[0]
+        # if "*" in matches[0].context:
+        #     return matches[0]
         if "answer is" in matches[0].context:
             return matches[0]
-        if len(matches) == 1:
-            return matches[0]
+        # if len(matches) == 1:
+        #     return matches[0]
         log_error("Unique scores for %s, matches are %s", s, matches)
 
     score_lines = [line for line in s.splitlines() if "**" in line]
