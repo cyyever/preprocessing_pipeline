@@ -117,8 +117,7 @@ def parse_score(sample_id: str, raw_score: str) -> Expected[float]:
     if not isinstance(res, MatchWithContext):
         if res is None:
             return Expected.ok(value=0)
-        print("Invalid processed answer:\n", raw_score, "multiple matches", res, "\n")
-        return Expected.ok(value=0)
+        return Expected.not_ok()
 
     score_number = float(res.real_match)
     assert 0 <= score_number <= 1, res.real_match
