@@ -42,6 +42,8 @@ def is_valid_score(m: MatchWithContext) -> bool:
 
 def __parse_score_impl(s: str) -> MatchWithContext | list[MatchWithContext] | None:
     lines = strip_lines(s)
+    for idx, line in enumerate(lines):
+        lines[idx] = " ".join(line.split())
     s = " ".join(lines)
     s = (
         s.lower().strip().replace(" :", ":").replace(": ", ":").replace(" =", "=")
@@ -93,11 +95,14 @@ def __parse_score_impl(s: str) -> MatchWithContext | list[MatchWithContext] | No
     assert matches
 
     matches = [m for m in matches if "score is not" not in m.match.group(0)]
-    possible_matches = [
-        m for m in matches if "**" in m.context or "score:" in m.context
-    ]
+    possible_matches = [m for m in matches if f"score:{m.real_match}" in m.context]
     if len(possible_matches) == 1:
         return possible_matches[0]
+    if len(possible_matches) > 1:
+        real_match_set = {m.real_match for m in possible_matches}
+        if len(real_match_set) == 1:
+            return possible_matches[0]
+        log_error("multiple scores %s: %s", s, possible_matches)
 
     possible_matches = [m for m in matches if "final score:" in m.match.group(0)]
     if len(possible_matches) == 1:
