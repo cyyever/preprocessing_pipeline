@@ -4,7 +4,12 @@ import bs4
 from cyy_naive_lib import Expected
 
 from .parse_score import parse_score
-from .regex_parsing import MatchWithContext, parse_floats, parse_pattern
+from .regex_parsing import (
+    MatchWithContext,
+    integer_pattern,
+    parse_floats,
+    parse_pattern,
+)
 
 
 def approximately_match_token(a: str, b: str, threshold: float = 0.9) -> bool:
@@ -93,5 +98,6 @@ __all__ = [
     "parse_floats",
     "parse_pattern",
     "parse_score",
+    "integer_pattern",
     "MatchWithContext",
 ]

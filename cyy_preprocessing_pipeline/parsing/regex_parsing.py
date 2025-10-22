@@ -50,6 +50,7 @@ def parse_pattern(
 
 
 float_pattern = r"\b(?:[-+]?[0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?)"
+integer_pattern = r"[-+]?[0-9]+"
 
 
 def parse_floats(
