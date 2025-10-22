@@ -1,6 +1,7 @@
 from collections.abc import Iterable, Sequence
 
 import bs4
+from cyy_naive_lib import Expected
 
 from .parse_score import parse_score
 from .regex_parsing import MatchWithContext, parse_floats, parse_pattern
@@ -53,7 +54,7 @@ def approximately_match_tokens(
     return tags
 
 
-def parsing_html_tag(html: str, preferred_tag: str) -> str:
+def parse_html_tag(html: str, preferred_tag: str) -> str:
     # Parse HTML using BeautifulSoup
     soup = bs4.BeautifulSoup(html, "html.parser")
     result = ""
@@ -72,15 +73,23 @@ def parsing_html_tag(html: str, preferred_tag: str) -> str:
     return result
 
 
-def parse_html_tag(html: str, preferred_tag: str) -> str:
-    return parsing_html_tag(html=html, preferred_tag=preferred_tag)
+def parse_html_tag_strict(html: str, tag: str) -> Expected[str]:
+    # Parse HTML using BeautifulSoup
+    soup = bs4.BeautifulSoup(html, "html.parser")
+    for child in soup:
+        match child:
+            case bs4.element.Tag():
+                tag_name = child.name.lower()
+                if tag_name == tag.lower():
+                    return Expected.ok(child.get_text())
+    return Expected.not_ok()
 
 
 __all__ = [
     "approximately_match_token",
     "approximately_match_tokens",
-    "parsing_html_tag",
     "parse_html_tag",
+    "parse_html_tag_strict",
     "parse_floats",
     "parse_pattern",
     "parse_score",
