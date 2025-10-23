@@ -78,15 +78,18 @@ def parse_html_tag(html: str, preferred_tag: str) -> str:
     return result
 
 
-def parse_html_tag_strict(html: str, tag: str) -> Expected[str]:
+def parse_html_tag_strict(html: str, tag: str) -> Expected[list[str]]:
     # Parse HTML using BeautifulSoup
     soup = bs4.BeautifulSoup(html, "html.parser")
+    contents: list[str] = []
     for child in soup:
         match child:
             case bs4.element.Tag():
                 tag_name = child.name.lower()
                 if tag_name == tag.lower():
-                    return Expected.ok(child.get_text())
+                    contents.append(child.get_text())
+    if contents:
+        return Expected.ok(contents)
     return Expected.not_ok()
 
 
