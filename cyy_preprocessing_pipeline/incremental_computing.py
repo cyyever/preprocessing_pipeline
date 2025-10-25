@@ -22,7 +22,7 @@ def incremental_save(
     time_counter = TimeCounter()
     for result_pair in data_fun(res):
         key, v = result_pair
-        assert key not in res
+        assert key not in res, (key, res)
         res[key] = v
         if check_signal(signal.SIGINT):
             break
