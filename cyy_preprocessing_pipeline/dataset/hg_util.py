@@ -35,6 +35,18 @@ class HFDatasetUtil(Decorator[datasets.Dataset]):
         new_instance.set_dataset(self.dataset.filter(*args, **kwargs))
         return new_instance
 
+    def add_id_column(self, column_name: str):
+        cnt = 0
+
+        def impl(example):
+            nonlocal cnt
+            assert column_name not in example
+            example[column_name] = cnt
+            cnt += 1
+            return example
+
+        self.set_dataset(self.dataset.map(impl, num_proc=2))
+
     def add_column_from_dict(
         self,
         column: dict,
