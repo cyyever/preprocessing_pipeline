@@ -2,6 +2,7 @@ from collections.abc import Generator, Iterable
 from typing import Any
 
 import torch
+import torch.utils.data
 import torch.utils.data.datapipes
 
 from ..transform import DatasetTransform
