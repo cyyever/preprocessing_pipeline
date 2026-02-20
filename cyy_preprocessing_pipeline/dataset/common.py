@@ -68,7 +68,7 @@ class KeyPipe(torch.utils.data.MapDataPipe):
         super().__init__()
         self.__dp = dp
 
-    def __getitem__(self, index: int) -> tuple:
+    def __getitem__(self, index: int) -> tuple[int, Any]:
         item = self.__dp[index]
         return (index, item)
 
@@ -88,6 +88,6 @@ class DatasetWithIndex(DatasetTransform):
         )
 
     @classmethod
-    def _add_index_to_map_item(cls, item: tuple) -> dict:
+    def _add_index_to_map_item(cls, item: tuple[int, Any]) -> dict[str, Any]:
         key, value = item[0], item[1]
         return {"index": key, "data": value}

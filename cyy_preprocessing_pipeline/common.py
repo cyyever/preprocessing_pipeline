@@ -38,7 +38,7 @@ class DataExtraction(Transform):
 
 
 def __get_int_target(
-    reversed_label_names: dict, label_name: str, *args: Any, **kwargs: Any
+    reversed_label_names: dict[str, int], label_name: str, *args: Any, **kwargs: Any
 ) -> int:
     return reversed_label_names[label_name]
 

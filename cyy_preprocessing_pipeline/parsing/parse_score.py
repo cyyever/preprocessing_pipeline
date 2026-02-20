@@ -24,7 +24,7 @@ def refine_match(m: MatchWithContext) -> str:
     if f"({s})" in context:
         return invalid_score
     if s.endswith(".0"):
-        s.removesuffix(".0")
+        s = s.removesuffix(".0")
     if "00" in s:
         return invalid_score
     return s

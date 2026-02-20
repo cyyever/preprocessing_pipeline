@@ -65,7 +65,7 @@ class IOBRecord:
         }
 
     def get_tag_distribution(self) -> dict[str, Counter[str]]:
-        result: dict[str, Counter] = {}
+        result: dict[str, Counter[str]] = {}
         for t in self.__tokens:
             tag = self.background_tag
             phrase = ""
@@ -108,7 +108,7 @@ class IOBRecord:
 
     @property
     def annotated_phrases(self) -> list[tuple[str, str]]:
-        return [(" ".join(p[0]), p[1]) for p in self.tokens if not isinstance(p, str)]
+        return [(" ".join(p[0]), p[1]) for p in self.__tokens if not isinstance(p, str)]
 
     @property
     def html(self) -> str:

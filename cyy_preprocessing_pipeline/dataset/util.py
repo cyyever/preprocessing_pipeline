@@ -190,11 +190,11 @@ class DatasetUtil:
         if classes and isinstance(classes[0], str):
             return dict(enumerate(classes))
 
-        def get_label_name(container: set, idx_and_labels: tuple[int, set]) -> set:
+        def get_label_name(container: set[Any], idx_and_labels: tuple[int, set[Any]]) -> set[Any]:
             container.update(idx_and_labels[1])
             return container
 
-        label_names: set = functools.reduce(
+        label_names: set[Any] = functools.reduce(
             get_label_name, self.get_batch_labels(), set()
         )
         if label_names:

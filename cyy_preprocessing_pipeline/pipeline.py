@@ -77,8 +77,8 @@ class DataPipeline:
         assert len(remaining_pipeline) == 0
         return res
 
-    def cache_dataset(self, dataset: torch.utils.data.Dataset) -> tuple[list, Self]:
-        transformed_dataset: list = []
+    def cache_dataset(self, dataset: torch.utils.data.Dataset) -> tuple[list[Any], Self]:
+        transformed_dataset: list[Any] = []
         remaining_pipeline: None | Self = None
         for _, item in select_item(dataset):
             item, remaining_pipeline = self.apply(item)
@@ -88,7 +88,7 @@ class DataPipeline:
 
     def collate_batch(self, batch: Iterable[Any]) -> dict[str, Any]:
         batch_size = 0
-        result: dict | None | list = None
+        result: dict[str, list[Any]] | list[Any] | None = None
         batch_transforms: None | Self = None
         for data in batch:
             data, batch_transforms = self.apply(data)
