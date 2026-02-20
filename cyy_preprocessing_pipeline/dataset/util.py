@@ -1,5 +1,5 @@
 import functools
-from collections.abc import Generator, Iterable
+from collections.abc import Generator
 from typing import Any
 
 import torch
@@ -7,10 +7,7 @@ import torch.utils.data.datapipes
 
 from ..pipeline import DataPipeline
 from ..tensor import tensor_to
-from .common import get_dataset_size, select_item, subset_dp
-
-type IndicesType = Iterable[int]
-type OptionalIndicesType = IndicesType | None
+from .common import IndicesType, OptionalIndicesType, get_dataset_size, select_item, subset_dp
 
 
 class DatasetUtil:
@@ -65,16 +62,16 @@ class DatasetUtil:
             data = tensor_to(data, device=device)
         return data, remaining_pipeline
 
-    def decompose(self) -> None | dict:
+    def decompose(self) -> dict[str, Any] | None:
         return None
 
     def get_subset(self, indices: IndicesType) -> torch.utils.data.MapDataPipe:
         return subset_dp(self.dataset, indices)
 
-    def get_raw_samples(self, indices: OptionalIndicesType = None) -> Generator:
+    def get_raw_samples(self, indices: OptionalIndicesType = None) -> Generator[tuple[int, Any], None, None]:
         return select_item(dataset=self.dataset, indices=indices)
 
-    def get_samples(self, indices: OptionalIndicesType = None) -> Generator:
+    def get_samples(self, indices: OptionalIndicesType = None) -> Generator[tuple[int, Any], None, None]:
         raw_samples = self.get_raw_samples(indices=indices)
         for idx, sample in raw_samples:
             if self.__pipeline is not None:
@@ -87,7 +84,7 @@ class DatasetUtil:
         return None
 
     @classmethod
-    def __decode_target(cls, target: Any) -> set:
+    def __decode_target(cls, target: Any) -> set[Any]:
         match target:
             case int() | str():
                 return {target}
@@ -148,7 +145,7 @@ class DatasetUtil:
 
     def __get_batch_labels_impl(
         self, indices: OptionalIndicesType = None
-    ) -> Generator[tuple[int, Any]]:
+    ) -> Generator[tuple[int, Any], None, None]:
         for idx, sample in self.get_samples(indices):
             target: Any | None = None
             if "target" in sample:
@@ -169,25 +166,25 @@ class DatasetUtil:
 
     def get_batch_labels(
         self, indices: OptionalIndicesType = None
-    ) -> Generator[tuple[int, set]]:
+    ) -> Generator[tuple[int, set[Any]], None, None]:
         for idx, target in self.__get_batch_labels_impl(indices):
             labels = DatasetUtil.__decode_target(target)
             if -100 in labels:
                 labels.remove(-100)
             yield idx, labels
 
-    def get_sample_label(self, index: int) -> set:
+    def get_sample_label(self, index: int) -> set[Any]:
         for _, labels in self.get_batch_labels(indices=[index]):
             return labels
         raise RuntimeError()
 
-    def get_labels(self) -> set:
+    def get_labels(self) -> set[Any]:
         return set().union(*tuple(set(labels) for _, labels in self.get_batch_labels()))
 
     def get_original_dataset(self) -> torch.utils.data.Dataset:
         return self.dataset[0].get("original_dataset", self.dataset)
 
-    def get_label_names(self) -> dict:
+    def get_label_names(self) -> dict[int, Any]:
         original_dataset = self.get_original_dataset()
         classes = getattr(original_dataset, "classes", None)
         if classes and isinstance(classes[0], str):

@@ -1,9 +1,10 @@
 import os
 
+import datasets
 from datasets import load_dataset
 
 
-def load_local_files(files: str | list[str]):
+def load_local_files(files: str | list[str]) -> datasets.Dataset:
     if isinstance(files, str):
         files = [files]
     path = os.path.splitext(files[0])[1][1:]

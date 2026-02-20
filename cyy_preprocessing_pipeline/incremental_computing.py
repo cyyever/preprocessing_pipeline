@@ -50,7 +50,7 @@ def incremental_computing(
     if multiprocessing and executor_pool is None:
         executor_pool = ProcessPool()
 
-    def wrapped_fun(sample_id, value):
+    def wrapped_fun(sample_id: str, value: Any) -> tuple[str, Any] | None:
         expected = fun(sample_id, value)
         if expected.is_ok():
             return str(sample_id), expected.value()

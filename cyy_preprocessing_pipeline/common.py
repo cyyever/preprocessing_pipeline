@@ -38,18 +38,18 @@ class DataExtraction(Transform):
 
 
 def __get_int_target(
-    reversed_label_names: dict, label_name: str, *args: list, **kwargs: Any
+    reversed_label_names: dict, label_name: str, *args: Any, **kwargs: Any
 ) -> int:
     return reversed_label_names[label_name]
 
 
-def str_target_to_int(label_names: dict) -> Callable:
+def str_target_to_int(label_names: dict[int, str]) -> Callable[..., int]:
     reversed_label_names = {v: k for k, v in label_names.items()}
     log_info("map string targets by %s", reversed_label_names)
     return functools.partial(__get_int_target, reversed_label_names)
 
 
-def int_target_to_text(target: int, index: int, mapping: dict | None = None) -> str:
+def int_target_to_text(target: int, index: int, mapping: dict[int, str] | None = None) -> str:
     if mapping is not None:
         return mapping[target]
     match target:
@@ -64,18 +64,18 @@ def int_target_to_text(target: int, index: int, mapping: dict | None = None) -> 
     raise NotImplementedError()
 
 
-def __replace_target(label_map: dict, target: Any, index: int) -> Any:
+def __replace_target(label_map: dict[int, Any], target: Any, index: int) -> Any:
     if index in label_map:
         assert label_map[index] != target
         target = label_map[index]
     return target
 
 
-def replace_target(label_map: dict) -> Callable:
+def replace_target(label_map: dict[int, Any]) -> Callable[..., Any]:
     return functools.partial(__replace_target, label_map)
 
 
-def backup_target(data: dict) -> dict:
+def backup_target(data: dict[str, Any]) -> dict[str, Any]:
     if "target" in data:
         data["original_target"] = data["target"]
     return data
@@ -85,7 +85,7 @@ def replace_str(string: str, old: str, new: str) -> str:
     return string.replace(old, new)
 
 
-def target_offset(data: dict, offset: int) -> dict:
+def target_offset(data: dict[str, Any], offset: int) -> dict[str, Any]:
     data["target"] = data["target"] + offset
     return data
 

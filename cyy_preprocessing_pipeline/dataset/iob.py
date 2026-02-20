@@ -1,5 +1,6 @@
 import json
 from collections import Counter
+from typing import Any
 
 from .parser import Parser
 
@@ -53,7 +54,7 @@ class IOBRecord:
     def token_tags(self) -> list[str]:
         return self.__token_tags
 
-    def to_json(self) -> dict:
+    def to_json(self) -> dict[str, Any]:
         tokens = self.tokens
         assert len(tokens) == len(self.token_tags)
 
@@ -63,7 +64,7 @@ class IOBRecord:
             "html": self.html,
         }
 
-    def get_tag_distribution(self) -> dict[str, Counter]:
+    def get_tag_distribution(self) -> dict[str, Counter[str]]:
         result: dict[str, Counter] = {}
         for t in self.__tokens:
             tag = self.background_tag
@@ -142,10 +143,10 @@ class IOBParser(Parser):
 
 
 class JSONRecord:
-    def __init__(self, json_content: dict) -> None:
+    def __init__(self, json_content: dict[str, Any]) -> None:
         self.__json_content = json_content
 
-    def to_json(self) -> dict:
+    def to_json(self) -> dict[str, Any]:
         return self.__json_content
 
     @property

@@ -26,7 +26,7 @@ def cat_tensor_dict(tensor_dict: dict[Any, torch.Tensor]) -> torch.Tensor:
 def decompose_like_tensor_dict(
     tensor_dict: dict[Any, torch.Tensor], tensor: torch.Tensor
 ) -> dict[Any, torch.Tensor]:
-    result = {}
+    result: dict[Any, torch.Tensor] = {}
     bias: int = 0
     for key, component in get_mapping_items_by_key_order(tensor_dict):
         param_element_num = int(torch.prod(component.shape).item())
@@ -36,7 +36,7 @@ def decompose_like_tensor_dict(
     return result
 
 
-def get_tensor_serialization_size(data) -> int:
+def get_tensor_serialization_size(data: Any) -> int:
     return len(dill.dumps(data))
 
 
@@ -45,7 +45,7 @@ class __RecursiveCheckPoint:
         self.data: Any = data
 
 
-def recursive_tensor_op(data: Any, fun: Callable, **kwargs: Any) -> Any:
+def recursive_tensor_op(data: Any, fun: Callable[..., Any], **kwargs: Any) -> Any:
     if "numpy" in str(type(data)):
         return data
     match data:
@@ -90,7 +90,7 @@ def recursive_tensor_op(data: Any, fun: Callable, **kwargs: Any) -> Any:
 def tensor_to[T](
     data: T, non_blocking: bool = True, check_slowdown: bool = False, **kwargs: Any
 ) -> T:
-    def fun(data):
+    def fun(data: Any) -> Expected:
         if isinstance(data, torch.Tensor):
             if check_slowdown:
                 device = kwargs.get("device")
@@ -116,7 +116,7 @@ def tensor_to[T](
 
 
 def tensor_clone[T](data: T, detach: bool = True) -> T:
-    def fun(data):
+    def fun(data: Any) -> Expected:
         if isinstance(data, torch.Tensor):
             new_data = data
             if detach:
@@ -129,8 +129,8 @@ def tensor_clone[T](data: T, detach: bool = True) -> T:
 
 
 def assemble_tensors(data: Any) -> tuple[torch.Tensor | None, Any]:
-    tensor_list = []
-    offset = 0
+    tensor_list: list[torch.Tensor] = []
+    offset: int = 0
 
     def fun(data: torch.Tensor) -> __RecursiveCheckPoint:
         nonlocal offset
@@ -155,7 +155,7 @@ def assemble_tensors(data: Any) -> tuple[torch.Tensor | None, Any]:
 
 
 def disassemble_tensor(
-    concatenated_tensor: torch.Tensor, data: Any, clone: bool = True
+    concatenated_tensor: torch.Tensor | None, data: Any, clone: bool = True
 ) -> Any:
     def fun(data: Any) -> Any:
         if len(data) == 1:

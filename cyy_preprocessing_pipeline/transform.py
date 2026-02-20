@@ -5,7 +5,7 @@ from typing import Any
 
 @dataclass(kw_only=True)
 class Transform:
-    fun: Callable
+    fun: Callable[..., Any]
     name: str = ""
     cacheable: bool = False
     component: str | None = None

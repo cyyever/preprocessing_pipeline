@@ -1,23 +1,24 @@
 import functools
 import os
+from typing import Any
 
 from cyy_naive_lib import load_json
 from pandas import DataFrame
 
 
 class HFTrainerResult:
-    def __init__(self, result_path: str):
+    def __init__(self, result_path: str) -> None:
         assert os.path.isdir(result_path)
         self.result_path = result_path
 
     @functools.cached_property
-    def trainer_state(self) -> dict:
+    def trainer_state(self) -> dict[str, Any]:
         stat = load_json(os.path.join(self.result_path, "trainer_state.json"))
         assert stat and isinstance(stat, dict)
         return stat
 
     @functools.cached_property
-    def log_history(self) -> list[dict]:
+    def log_history(self) -> list[dict[str, Any]]:
         h = self.trainer_state["log_history"]
         assert h and isinstance(h, list)
         return h

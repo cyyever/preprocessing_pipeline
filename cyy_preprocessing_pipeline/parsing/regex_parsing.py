@@ -7,15 +7,15 @@ from cyy_naive_lib.log import log_info
 
 @dataclass
 class MatchWithContext:
-    match: re.Match
+    match: re.Match[str]
     real_match: str
     context: str
 
 
-compiled_rex = {}
+compiled_rex: dict[str, re.Pattern[str]] = {}
 
 
-def get_match_with_context(match: re.Match) -> MatchWithContext:
+def get_match_with_context(match: re.Match[str]) -> MatchWithContext:
     start = match.start(0)
     end = match.start(0)
     start = max(start - 10, 0)

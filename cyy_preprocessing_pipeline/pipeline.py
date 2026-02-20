@@ -53,7 +53,7 @@ class DataPipeline:
         )
 
     def __apply_until(
-        self, data: Any, cond: Callable | None = None
+        self, data: Any, cond: Callable[[Transform], bool] | None = None
     ) -> tuple[Any, Self]:
         assert self.is_valid()
         for idx, t in enumerate(self.__transforms):
@@ -86,7 +86,7 @@ class DataPipeline:
         assert remaining_pipeline is not None
         return transformed_dataset, remaining_pipeline
 
-    def collate_batch(self, batch: Iterable) -> dict:
+    def collate_batch(self, batch: Iterable[Any]) -> dict[str, Any]:
         batch_size = 0
         result: dict | None | list = None
         batch_transforms: None | Self = None

@@ -17,19 +17,19 @@ class DatasetSampler:
         self.checked_indices: set[int] | None = None
 
     @property
-    def dataset(self):
+    def dataset(self) -> torch.utils.data.Dataset:
         return self.__dataset_util.dataset
 
-    def set_excluded_indices(self, excluded_indices):
+    def set_excluded_indices(self, excluded_indices: set[int]) -> None:
         self._excluded_indices = excluded_indices
 
     @functools.cached_property
-    def sample_label_dict(self) -> dict[int, set]:
+    def sample_label_dict(self) -> dict[int, set[Any]]:
         return dict(self.__dataset_util.get_batch_labels())
 
     @functools.cached_property
-    def label_sample_dict(self) -> dict[Any, set]:
-        label_sample_dict: dict = {}
+    def label_sample_dict(self) -> dict[Any, set[int]]:
+        label_sample_dict: dict[Any, set[int]] = {}
         for index, labels in self.sample_label_dict.items():
             for label in labels:
                 if label not in label_sample_dict:
@@ -38,7 +38,7 @@ class DatasetSampler:
                     label_sample_dict[label].add(index)
         return label_sample_dict
 
-    def get_subsets(self, index_list: list) -> list[torch.utils.data.MapDataPipe]:
+    def get_subsets(self, index_list: list[set[int]]) -> list[torch.utils.data.MapDataPipe]:
         return [
             self.__dataset_util.get_subset(indices=indices) for indices in index_list
         ]
@@ -46,14 +46,14 @@ class DatasetSampler:
     def split_indices(
         self,
         part_proportions: list[dict[Any, float]],
-        labels: list | None = None,
+        labels: list[Any] | None = None,
         is_iid: bool = False,
-    ) -> list[set]:
+    ) -> list[set[int]]:
         assert part_proportions
 
-        sub_index_list: list[set] = [set()] * len(part_proportions)
+        sub_index_list: list[set[int]] = [set()] * len(part_proportions)
 
-        def __split_per_label(label, indices):
+        def __split_per_label(label: Any, indices: set[int]) -> set[int]:
             nonlocal part_proportions
             label_part = [
                 part_proportion.get(label, 0) for part_proportion in part_proportions
@@ -76,13 +76,13 @@ class DatasetSampler:
     def sample_indices(
         self,
         parts: list[dict[Any, float]],
-        labels: list | None = None,
-    ) -> list[set]:
+        labels: list[Any] | None = None,
+    ) -> list[set[int]]:
         assert parts
 
-        sub_index_list: list[set] = [set()] * len(parts)
+        sub_index_list: list[set[int]] = [set()] * len(parts)
 
-        def __sample_per_label(label: Any, indices: set):
+        def __sample_per_label(label: Any, indices: set[int]) -> set[int]:
             nonlocal parts
             label_part = [part.get(label, 0) for part in parts]
             if sum(label_part) == 0:
@@ -108,8 +108,8 @@ class DatasetSampler:
     def iid_split_indices(
         self,
         parts: list[float],
-        labels: list | None = None,
-    ) -> list[set]:
+        labels: list[Any] | None = None,
+    ) -> list[set[int]]:
         assert parts
 
         if labels is None:
@@ -120,12 +120,12 @@ class DatasetSampler:
         )
 
     def random_split_indices(
-        self, parts: list[float], labels: list | None = None, by_label: bool = True
+        self, parts: list[float], labels: list[Any] | None = None, by_label: bool = True
     ) -> list[list[int]]:
         if by_label:
             collected_indices = set()
 
-            def __collect(_: Any, indices: set) -> set:
+            def __collect(_: Any, indices: set[int]) -> set[int]:
                 collected_indices.update(indices)
                 return indices
 
@@ -134,19 +134,19 @@ class DatasetSampler:
         index_list = list(set(range(len(self.__dataset_util))) - self._excluded_indices)
         return self.__split_index_list(parts, index_list, is_iid=False)
 
-    def iid_split(self, parts: list[float], labels: list | None = None) -> list:
+    def iid_split(self, parts: list[float], labels: list[Any] | None = None) -> list[torch.utils.data.MapDataPipe]:
         return self.get_subsets(self.iid_split_indices(parts, labels=labels))
 
-    def iid_sample_indices(self, percent: float) -> set:
+    def iid_sample_indices(self, percent: float) -> set[int]:
         labels = list(self.label_sample_dict.keys())
         return self.sample_indices(
             [{label: percent for label in labels}], labels=labels
         )[0]
 
     def randomize_label(
-        self, indices: list, percent: float, all_labels: set | None = None
-    ) -> dict[int, set]:
-        randomized_label_map: dict[int, set] = {}
+        self, indices: list[int], percent: float, all_labels: set[Any] | None = None
+    ) -> dict[int, set[Any]]:
+        randomized_label_map: dict[int, set[Any]] = {}
         if all_labels is None:
             all_labels = set(self.label_sample_dict.keys())
 
@@ -163,11 +163,11 @@ class DatasetSampler:
         return randomized_label_map
 
     def randomize_label_by_class(
-        self, percent: float | dict[Any, float], all_labels: set | None = None, **kwargs
-    ) -> dict[int, set]:
-        randomized_label_map: dict[int, set] = {}
+        self, percent: float | dict[Any, float], all_labels: set[Any] | None = None, **kwargs: Any
+    ) -> dict[int, set[Any]]:
+        randomized_label_map: dict[int, set[Any]] = {}
 
-        def __randomize(label: set, indices):
+        def __randomize(label: Any, indices: set[int]) -> set[int]:
             nonlocal randomized_label_map
             nonlocal percent
             if not indices:
@@ -190,8 +190,8 @@ class DatasetSampler:
 
     @classmethod
     def __split_index_list(
-        cls, parts: list[float], index_list: list, is_iid: bool
-    ) -> list[list]:
+        cls, parts: list[float], index_list: list[int], is_iid: bool
+    ) -> list[list[int]]:
         assert index_list
         if len(parts) == 1:
             assert parts[0] != 0
@@ -230,8 +230,8 @@ class DatasetSampler:
 
     def __check_sample_by_label(
         self,
-        callback: Callable,
-        labels: list | None = None,
+        callback: Callable[..., set[int]],
+        labels: list[Any] | None = None,
     ) -> None:
         excluded_indices = copy.copy(self._excluded_indices)
 

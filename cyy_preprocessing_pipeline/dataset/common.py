@@ -25,7 +25,7 @@ def get_dataset_size(dataset: Any) -> int:
     raise NotImplementedError(dataset)
 
 
-def select_item(dataset: Any, indices: OptionalIndicesType = None) -> Generator:
+def select_item(dataset: Any, indices: OptionalIndicesType = None) -> Generator[tuple[int, Any], None, None]:
     if indices is not None:
         indices = sorted(
             set(
@@ -68,7 +68,7 @@ class KeyPipe(torch.utils.data.MapDataPipe):
         super().__init__()
         self.__dp = dp
 
-    def __getitem__(self, index) -> tuple:
+    def __getitem__(self, index: int) -> tuple:
         item = self.__dp[index]
         return (index, item)
 
@@ -88,6 +88,6 @@ class DatasetWithIndex(DatasetTransform):
         )
 
     @classmethod
-    def _add_index_to_map_item(cls, item) -> dict:
+    def _add_index_to_map_item(cls, item: tuple) -> dict:
         key, value = item[0], item[1]
         return {"index": key, "data": value}

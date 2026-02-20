@@ -1,7 +1,7 @@
 import copy
 from collections import Counter
 from collections.abc import Iterable, Mapping
-from typing import Any
+from typing import Any, Self
 
 import datasets
 import numpy as np
@@ -11,12 +11,12 @@ from cyy_naive_lib.metric import SamplesMetrics, SamplesMetricsGroup
 
 class HFDatasetUtil(Decorator[datasets.Dataset]):
     @classmethod
-    def load_from_json(cls, dataset_json: str):
+    def load_from_json(cls, dataset_json: str) -> Self:
         dataset = load_json(dataset_json)
         return cls.load(dataset)
 
     @classmethod
-    def load(cls, dataset: list | dict):
+    def load(cls, dataset: list | dict) -> Self:
         if isinstance(dataset, Mapping):
             return cls(datasets.Dataset.from_dict(dataset))
         if isinstance(dataset, Iterable):
@@ -27,15 +27,15 @@ class HFDatasetUtil(Decorator[datasets.Dataset]):
     def dataset(self) -> datasets.Dataset:
         return self._decorator_object
 
-    def set_dataset(self, dataset: datasets.Dataset):
+    def set_dataset(self, dataset: datasets.Dataset) -> None:
         self._decorator_object = dataset
 
-    def filter(self, *args: Any, **kwargs: Any):
+    def filter(self, *args: Any, **kwargs: Any) -> Self:
         new_instance = copy.copy(self)
         new_instance.set_dataset(self.dataset.filter(*args, **kwargs))
         return new_instance
 
-    def add_id_column(self, column_name: str):
+    def add_id_column(self, column_name: str) -> None:
         cnt = 0
 
         def impl(example):
@@ -49,7 +49,7 @@ class HFDatasetUtil(Decorator[datasets.Dataset]):
 
     def add_column_from_dict(
         self,
-        column: dict,
+        column: dict[Any, Any],
         column_name: str,
         matched_key: str,
         default_value: Any = None,
@@ -97,5 +97,5 @@ class HFDatasetUtil(Decorator[datasets.Dataset]):
 
         return group
 
-    def count_column(self, column_name: str) -> Counter:
+    def count_column(self, column_name: str) -> Counter[Any]:
         return Counter(self.dataset[column_name])
