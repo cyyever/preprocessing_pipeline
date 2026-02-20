@@ -52,12 +52,12 @@ class HFDatasetUtil(Decorator[datasets.Dataset]):
     ) -> None:
         assert column
 
-        def impl(example):
-            assert column_name not in column
+        def impl(example: dict[str, Any]) -> dict[str, Any]:
+            assert column_name not in example
             k = example[matched_key]
-            value = column.pop(k, None)
+            value = column.get(k)
             if value is None:
-                value = column.pop(str(k), default_value)
+                value = column.get(str(k), default_value)
             example[column_name] = value
             return example
 

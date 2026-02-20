@@ -49,7 +49,9 @@ def str_target_to_int(label_names: dict[int, str]) -> Callable[..., int]:
     return functools.partial(__get_int_target, reversed_label_names)
 
 
-def int_target_to_text(target: int, index: int, mapping: dict[int, str] | None = None) -> str:
+def int_target_to_text(
+    target: int, index: int, mapping: dict[int, str] | None = None
+) -> str:
     if mapping is not None:
         return mapping[target]
     match target:

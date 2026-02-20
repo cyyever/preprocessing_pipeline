@@ -38,7 +38,9 @@ class DatasetSampler:
                     label_sample_dict[label].add(index)
         return label_sample_dict
 
-    def get_subsets(self, index_list: list[set[int]]) -> list[torch.utils.data.MapDataPipe]:
+    def get_subsets(
+        self, index_list: list[set[int]]
+    ) -> list[torch.utils.data.MapDataPipe]:
         return [
             self.__dataset_util.get_subset(indices=indices) for indices in index_list
         ]
@@ -134,7 +136,9 @@ class DatasetSampler:
         index_list = list(set(range(len(self.__dataset_util))) - self._excluded_indices)
         return self.__split_index_list(parts, index_list, is_iid=False)
 
-    def iid_split(self, parts: list[float], labels: list[Any] | None = None) -> list[torch.utils.data.MapDataPipe]:
+    def iid_split(
+        self, parts: list[float], labels: list[Any] | None = None
+    ) -> list[torch.utils.data.MapDataPipe]:
         return self.get_subsets(self.iid_split_indices(parts, labels=labels))
 
     def iid_sample_indices(self, percent: float) -> set[int]:
@@ -163,7 +167,10 @@ class DatasetSampler:
         return randomized_label_map
 
     def randomize_label_by_class(
-        self, percent: float | dict[Any, float], all_labels: set[Any] | None = None, **kwargs: Any
+        self,
+        percent: float | dict[Any, float],
+        all_labels: set[Any] | None = None,
+        **kwargs: Any,
     ) -> dict[int, set[Any]]:
         randomized_label_map: dict[int, set[Any]] = {}
 

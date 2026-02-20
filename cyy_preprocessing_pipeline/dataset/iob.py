@@ -28,7 +28,6 @@ class IOBRecord:
         if token_tag == self.background_tag:
             self.__last_tag = token_tag
         elif token_tag.startswith("B-"):
-            old_last_tag = self.__last_tag
             self.__last_tag = token_tag
             self.__tokens.pop()
             self.__tokens.append(([token], self.__last_tag[2:]))

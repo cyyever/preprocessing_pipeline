@@ -25,7 +25,9 @@ def get_dataset_size(dataset: Any) -> int:
     raise NotImplementedError(dataset)
 
 
-def select_item(dataset: Any, indices: OptionalIndicesType = None) -> Generator[tuple[int, Any], None, None]:
+def select_item(
+    dataset: Any, indices: OptionalIndicesType = None
+) -> Generator[tuple[int, Any]]:
     if indices is not None:
         indices = sorted(
             set(

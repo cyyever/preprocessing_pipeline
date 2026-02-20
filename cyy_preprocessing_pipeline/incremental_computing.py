@@ -10,7 +10,7 @@ from .signal_handling import check_signal, setup_signal_handler
 
 def incremental_save(
     output_json: str,
-    data_fun: Callable[[Any], Generator[tuple[str, Any], Any, None]],
+    data_fun: Callable[[Any], Generator[tuple[str, Any], Any]],
     save_second_interval: int = 10 * 60,
 ) -> None:
     setup_signal_handler(signal.SIGINT, overwrite=True)
@@ -42,7 +42,7 @@ def incremental_computing(
     save_second_interval: int = 10 * 60,
     multiprocessing: bool = False,
 ) -> None:
-    global executor_pool  # noqa
+    executor_pool = None
     data = load_json(input_json)
     assert isinstance(data, dict), output_json
     data = {str(k): v for k, v in data.items()}
@@ -56,7 +56,7 @@ def incremental_computing(
             return str(sample_id), expected.value()
         return None
 
-    def data_fun(previous_results: Any) -> Generator[tuple[str, Any], Any, None]:
+    def data_fun(previous_results: Any) -> Generator[tuple[str, Any], Any]:
         assert isinstance(previous_results, dict)
         for sample_id, value in data.items():
             if str(sample_id) in previous_results:
@@ -74,6 +74,14 @@ def incremental_computing(
                 res = wrapped_fun(sample_id, value)
                 if res is not None:
                     yield res
+        if executor_pool is not None:
+            futures, not_done_len = executor_pool.wait_results()
+            for tuple_result in futures.values():
+                if tuple_result is not None:
+                    sample_id, result = tuple_result
+                    assert isinstance(sample_id, str)
+                    yield str(sample_id), result
+            assert not not_done_len
 
     incremental_save(
         output_json=output_json,

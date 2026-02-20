@@ -1,5 +1,5 @@
 import functools
-from collections.abc import Generator
+from collections.abc import Generator, Iterable
 from typing import Any
 
 import torch
@@ -7,7 +7,13 @@ import torch.utils.data.datapipes
 
 from ..pipeline import DataPipeline
 from ..tensor import tensor_to
-from .common import IndicesType, OptionalIndicesType, get_dataset_size, select_item, subset_dp
+from .common import (
+    IndicesType,
+    OptionalIndicesType,
+    get_dataset_size,
+    select_item,
+    subset_dp,
+)
 
 
 class DatasetUtil:
@@ -68,10 +74,14 @@ class DatasetUtil:
     def get_subset(self, indices: IndicesType) -> torch.utils.data.MapDataPipe:
         return subset_dp(self.dataset, indices)
 
-    def get_raw_samples(self, indices: OptionalIndicesType = None) -> Generator[tuple[int, Any], None, None]:
+    def get_raw_samples(
+        self, indices: OptionalIndicesType = None
+    ) -> Generator[tuple[int, Any]]:
         return select_item(dataset=self.dataset, indices=indices)
 
-    def get_samples(self, indices: OptionalIndicesType = None) -> Generator[tuple[int, Any], None, None]:
+    def get_samples(
+        self, indices: OptionalIndicesType = None
+    ) -> Generator[tuple[int, Any]]:
         raw_samples = self.get_raw_samples(indices=indices)
         for idx, sample in raw_samples:
             if self.__pipeline is not None:
@@ -145,7 +155,7 @@ class DatasetUtil:
 
     def __get_batch_labels_impl(
         self, indices: OptionalIndicesType = None
-    ) -> Generator[tuple[int, Any], None, None]:
+    ) -> Generator[tuple[int, Any]]:
         for idx, sample in self.get_samples(indices):
             target: Any | None = None
             if "target" in sample:
@@ -166,7 +176,7 @@ class DatasetUtil:
 
     def get_batch_labels(
         self, indices: OptionalIndicesType = None
-    ) -> Generator[tuple[int, set[Any]], None, None]:
+    ) -> Generator[tuple[int, set[Any]]]:
         for idx, target in self.__get_batch_labels_impl(indices):
             labels = DatasetUtil.__decode_target(target)
             if -100 in labels:
@@ -190,7 +200,9 @@ class DatasetUtil:
         if classes and isinstance(classes[0], str):
             return dict(enumerate(classes))
 
-        def get_label_name(container: set[Any], idx_and_labels: tuple[int, set[Any]]) -> set[Any]:
+        def get_label_name(
+            container: set[Any], idx_and_labels: tuple[int, set[Any]]
+        ) -> set[Any]:
             container.update(idx_and_labels[1])
             return container
 

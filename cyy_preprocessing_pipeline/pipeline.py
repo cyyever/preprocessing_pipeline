@@ -77,7 +77,9 @@ class DataPipeline:
         assert len(remaining_pipeline) == 0
         return res
 
-    def cache_dataset(self, dataset: torch.utils.data.Dataset) -> tuple[list[Any], Self]:
+    def cache_dataset(
+        self, dataset: torch.utils.data.Dataset
+    ) -> tuple[list[Any], Self]:
         transformed_dataset: list[Any] = []
         remaining_pipeline: None | Self = None
         for _, item in select_item(dataset):
