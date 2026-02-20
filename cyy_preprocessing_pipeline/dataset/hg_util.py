@@ -21,7 +21,7 @@ class HFDatasetUtil(Decorator[datasets.Dataset]):
             return cls(datasets.Dataset.from_dict(dataset))
         if isinstance(dataset, Iterable):
             return cls(datasets.Dataset.from_list(list(dataset)))
-        raise RuntimeError("Unsupported dataset:" + type(dataset))
+        raise RuntimeError("Unsupported dataset:" + type(dataset).__name__)
 
     @property
     def dataset(self) -> datasets.Dataset:
@@ -36,16 +36,12 @@ class HFDatasetUtil(Decorator[datasets.Dataset]):
         return new_instance
 
     def add_id_column(self, column_name: str) -> None:
-        cnt = 0
-
-        def impl(example):
-            nonlocal cnt
+        def impl(example: dict[str, Any], idx: int) -> dict[str, Any]:
             assert column_name not in example
-            example[column_name] = cnt
-            cnt += 1
+            example[column_name] = idx
             return example
 
-        self.set_dataset(self.dataset.map(impl, num_proc=2))
+        self.set_dataset(self.dataset.map(impl, with_indices=True, num_proc=2))
 
     def add_column_from_dict(
         self,
