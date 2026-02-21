@@ -27,7 +27,7 @@ def get_dataset_size(dataset: Any) -> int:
 
 def select_item(
     dataset: Any, indices: OptionalIndicesType = None
-) -> Generator[tuple[int, Any]]:
+) -> Generator[tuple[int, Any], None, None]:
     if indices is not None:
         indices = sorted(
             set(

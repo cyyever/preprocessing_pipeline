@@ -10,7 +10,7 @@ from .signal_handling import check_signal, setup_signal_handler
 
 def incremental_save(
     output_json: Path,
-    data_fun: Callable[[Any], Generator[tuple[str, Any], Any]],
+    data_fun: Callable[[Any], Generator[tuple[str, Any], None, None]],
     save_second_interval: int = 10 * 60,
 ) -> None:
     setup_signal_handler(signal.SIGINT, overwrite=True)
@@ -56,7 +56,7 @@ def incremental_computing(
             return str(sample_id), expected.value()
         return None
 
-    def data_fun(previous_results: Any) -> Generator[tuple[str, Any], Any]:
+    def data_fun(previous_results: Any) -> Generator[tuple[str, Any], None, None]:
         assert isinstance(previous_results, dict)
         for sample_id, value in data.items():
             if str(sample_id) in previous_results:

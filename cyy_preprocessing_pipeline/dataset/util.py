@@ -76,12 +76,12 @@ class DatasetUtil:
 
     def get_raw_samples(
         self, indices: OptionalIndicesType = None
-    ) -> Generator[tuple[int, Any]]:
+    ) -> Generator[tuple[int, Any], None, None]:
         return select_item(dataset=self.dataset, indices=indices)
 
     def get_samples(
         self, indices: OptionalIndicesType = None
-    ) -> Generator[tuple[int, Any]]:
+    ) -> Generator[tuple[int, Any], None, None]:
         raw_samples = self.get_raw_samples(indices=indices)
         for idx, sample in raw_samples:
             if self.__pipeline is not None:
@@ -155,7 +155,7 @@ class DatasetUtil:
 
     def __get_batch_labels_impl(
         self, indices: OptionalIndicesType = None
-    ) -> Generator[tuple[int, Any]]:
+    ) -> Generator[tuple[int, Any], None, None]:
         for idx, sample in self.get_samples(indices):
             target: Any | None = None
             if "target" in sample:
@@ -176,7 +176,7 @@ class DatasetUtil:
 
     def get_batch_labels(
         self, indices: OptionalIndicesType = None
-    ) -> Generator[tuple[int, set[Any]]]:
+    ) -> Generator[tuple[int, set[Any]], None, None]:
         for idx, target in self.__get_batch_labels_impl(indices):
             labels = DatasetUtil.__decode_target(target)
             if -100 in labels:
