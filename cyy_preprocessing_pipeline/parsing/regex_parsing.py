@@ -1,3 +1,4 @@
+import functools
 import re
 from collections.abc import Callable
 from dataclasses import dataclass
@@ -12,7 +13,9 @@ class MatchWithContext:
     context: str
 
 
-compiled_rex: dict[str, re.Pattern[str]] = {}
+@functools.lru_cache(maxsize=None)
+def _compile(pattern: str) -> re.Pattern[str]:
+    return re.compile(pattern)
 
 
 def get_match_with_context(match: re.Match[str]) -> MatchWithContext:
@@ -29,12 +32,9 @@ def parse_pattern(
     verifier: None | Callable[[MatchWithContext], bool] = None,
     verbose: bool = False,
 ) -> list[MatchWithContext]:
-    if pattern not in compiled_rex:
-        compiled_rex[pattern] = re.compile(pattern)
-    compiled_pattern = compiled_rex[pattern]
     matches = [
         get_match_with_context(match=m)
-        for m in re.finditer(pattern=compiled_pattern, string=s)
+        for m in re.finditer(pattern=_compile(pattern), string=s)
     ]
     if not matches:
         if verbose:

@@ -1,4 +1,4 @@
-import functools
+import itertools
 from collections.abc import Generator, Iterable
 from typing import Any
 
@@ -54,7 +54,7 @@ class DatasetUtil:
                 case torch.Tensor():
                     self.__sample_number += int((target != -100).sum().item())
                 case [int(), *_]:
-                    self.__sample_number += len([a for a in target if a != -100])
+                    self.__sample_number += sum(1 for a in target if a != -100)
         assert self.__sample_number != 0
         return self.__sample_number
 
@@ -189,7 +189,9 @@ class DatasetUtil:
         raise RuntimeError()
 
     def get_labels(self) -> set[Any]:
-        return set().union(*tuple(set(labels) for _, labels in self.get_batch_labels()))
+        return set(itertools.chain.from_iterable(
+            labels for _, labels in self.get_batch_labels()
+        ))
 
     def get_original_dataset(self) -> torch.utils.data.Dataset:
         return self.dataset[0].get("original_dataset", self.dataset)
@@ -200,15 +202,9 @@ class DatasetUtil:
         if classes and isinstance(classes[0], str):
             return dict(enumerate(classes))
 
-        def get_label_name(
-            container: set[Any], idx_and_labels: tuple[int, set[Any]]
-        ) -> set[Any]:
-            container.update(idx_and_labels[1])
-            return container
-
-        label_names: set[Any] = functools.reduce(
-            get_label_name, self.get_batch_labels(), set()
-        )
+        label_names = set(itertools.chain.from_iterable(
+            labels for _, labels in self.get_batch_labels()
+        ))
         if label_names:
             return dict(enumerate(sorted(label_names)))
         raise RuntimeError("no label names detected")

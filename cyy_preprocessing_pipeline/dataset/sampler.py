@@ -1,3 +1,4 @@
+import collections
 import copy
 import functools
 import random
@@ -29,14 +30,11 @@ class DatasetSampler:
 
     @functools.cached_property
     def label_sample_dict(self) -> dict[Any, set[int]]:
-        label_sample_dict: dict[Any, set[int]] = {}
+        label_sample_dict: collections.defaultdict[Any, set[int]] = collections.defaultdict(set)
         for index, labels in self.sample_label_dict.items():
             for label in labels:
-                if label not in label_sample_dict:
-                    label_sample_dict[label] = {index}
-                else:
-                    label_sample_dict[label].add(index)
-        return label_sample_dict
+                label_sample_dict[label].add(index)
+        return dict(label_sample_dict)
 
     def get_subsets(
         self, index_list: list[set[int]]
@@ -53,7 +51,7 @@ class DatasetSampler:
     ) -> list[set[int]]:
         assert part_proportions
 
-        sub_index_list: list[set[int]] = [set()] * len(part_proportions)
+        sub_index_list: list[set[int]] = [set() for _ in range(len(part_proportions))]
 
         def __split_per_label(label: Any, indices: set[int]) -> set[int]:
             nonlocal part_proportions
@@ -66,7 +64,7 @@ class DatasetSampler:
                 label_part, list(indices), is_iid=is_iid
             )
             for i, part_index_list in enumerate(part_index_lists):
-                sub_index_list[i] = sub_index_list[i] | set(part_index_list)
+                sub_index_list[i] |= set(part_index_list)
             return indices
 
         self.__check_sample_by_label(
@@ -82,7 +80,7 @@ class DatasetSampler:
     ) -> list[set[int]]:
         assert parts
 
-        sub_index_list: list[set[int]] = [set()] * len(parts)
+        sub_index_list: list[set[int]] = [set() for _ in range(len(parts))]
 
         def __sample_per_label(label: Any, indices: set[int]) -> set[int]:
             nonlocal parts
@@ -98,7 +96,7 @@ class DatasetSampler:
                     part_index_list[: int(label_part[i] * len(indices))]
                 )
                 sampled_indices.update(part_index_set)
-                sub_index_list[i] = sub_index_list[i] | part_index_set
+                sub_index_list[i] |= part_index_set
             return sampled_indices
 
         self.__check_sample_by_label(
@@ -207,10 +205,11 @@ class DatasetSampler:
         part_lens: list[int] = []
         first_assert = True
         index_num = len(index_list)
+        total = sum(parts)
 
         for part in parts:
             assert part > 0
-            part_len = int(index_num * part / sum(parts))
+            part_len = int(index_num * part / total)
             if part_len == 0 and is_iid:
                 if sum(part_lens, start=0) < index_num:
                     part_len = 1
@@ -223,8 +222,8 @@ class DatasetSampler:
                     )
             part_lens.append(part_len)
         for _ in range(index_num - sum(part_lens)):
-            idx = random.choice(range(len(part_lens)))
-            part_lens[idx] = part_lens[idx] + 1
+            idx = random.randrange(len(part_lens))
+            part_lens[idx] += 1
         assert sum(part_lens) == index_num
         part_indices = []
         for part_len in part_lens:

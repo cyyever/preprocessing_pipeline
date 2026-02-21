@@ -32,7 +32,7 @@ def setup_signal_handler(signum: int, overwrite: bool) -> None:
     previous_handler = None
     if not overwrite:
         previous_handler = signal.getsignal(signum)
-    if previous_handler is not None and not isinstance(previous_handler, int):
+    if callable(previous_handler):
         signal.signal(
             signum,
             functools.partial(combine_handle, __handler, previous_handler),
