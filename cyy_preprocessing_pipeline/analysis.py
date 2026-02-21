@@ -1,5 +1,5 @@
 import functools
-import os
+from pathlib import Path
 from typing import Any
 
 from cyy_naive_lib import load_json
@@ -7,13 +7,13 @@ from pandas import DataFrame
 
 
 class HFTrainerResult:
-    def __init__(self, result_path: str) -> None:
-        assert os.path.isdir(result_path)
+    def __init__(self, result_path: Path) -> None:
+        assert result_path.is_dir()
         self.result_path = result_path
 
     @functools.cached_property
     def trainer_state(self) -> dict[str, Any]:
-        stat = load_json(os.path.join(self.result_path, "trainer_state.json"))
+        stat = load_json(self.result_path / "trainer_state.json")
         assert stat and isinstance(stat, dict)
         return stat
 

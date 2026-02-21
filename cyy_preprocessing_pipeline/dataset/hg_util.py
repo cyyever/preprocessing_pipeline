@@ -1,6 +1,7 @@
 import copy
 from collections import Counter
 from collections.abc import Iterable, Mapping
+from pathlib import Path
 from typing import Any, Self
 
 import datasets
@@ -11,7 +12,7 @@ from cyy_naive_lib.metric import SamplesMetrics, SamplesMetricsGroup
 
 class HFDatasetUtil(Decorator[datasets.Dataset]):
     @classmethod
-    def load_from_json(cls, dataset_json: str) -> Self:
+    def load_from_json(cls, dataset_json: Path) -> Self:
         dataset = load_json(dataset_json)
         return cls.load(dataset)
 

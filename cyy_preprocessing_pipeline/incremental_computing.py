@@ -1,6 +1,6 @@
-import os
 import signal
 from collections.abc import Callable, Generator
+from pathlib import Path
 from typing import Any
 
 from cyy_naive_lib import Expected, ProcessPool, TimeCounter, load_json, save_json
@@ -9,13 +9,13 @@ from .signal_handling import check_signal, setup_signal_handler
 
 
 def incremental_save(
-    output_json: str,
+    output_json: Path,
     data_fun: Callable[[Any], Generator[tuple[str, Any], Any]],
     save_second_interval: int = 10 * 60,
 ) -> None:
     setup_signal_handler(signal.SIGINT, overwrite=True)
     res = {}
-    if os.path.isfile(output_json):
+    if output_json.is_file():
         res = load_json(output_json)
     assert isinstance(res, dict), output_json
     res = {str(k): v for k, v in res.items()}
@@ -36,8 +36,8 @@ executor_pool: ProcessPool | None = None
 
 
 def incremental_computing(
-    input_json: str,
-    output_json: str,
+    input_json: Path,
+    output_json: Path,
     fun: Callable[[str, Any], Expected],
     save_second_interval: int = 10 * 60,
     multiprocessing: bool = False,
