@@ -108,7 +108,7 @@ def tensor_to[T](
                         raise RuntimeError(
                             "device to device copy is blocking",
                         )
-                assert str(device) != str(data.device)
+                assert device is None or str(device) != str(data.device)
             return Expected.ok(data.to(**kwargs))
         return Expected.not_ok()
 

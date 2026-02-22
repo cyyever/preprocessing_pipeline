@@ -12,7 +12,8 @@ dependencies = [
   "cyy_naive_lib@git+https://github.com/cyyever/naive_python_lib.git@main",
   "datasets",
   "torch",
-  "bs4"
+  "bs4",
+  "dill"
 ]
 
 [project.urls]
