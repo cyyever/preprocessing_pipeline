@@ -17,7 +17,7 @@ class IOBRecord:
         self.__token_tags: list[str] = []
         self.__last_tag: str = self.background_tag
         if tokens:
-            assert tags is not None
+            assert tags
             for token, token_tag in zip(tokens, tags, strict=True):
                 self.add_line(token, token_tag)
 
@@ -133,6 +133,8 @@ class IOBParser(Parser):
                     record = IOBRecord()
                 continue
             idx = line.rfind("\t")
+            if idx == -1:
+                raise RuntimeError(f"no tab separator found in line: {line}")
             token_tag = line[idx + 1 :]
             token = line[:idx]
             record.add_line(token, token_tag)
