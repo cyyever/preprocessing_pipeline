@@ -29,7 +29,7 @@ def decompose_like_tensor_dict(
     result: dict[Any, torch.Tensor] = {}
     bias: int = 0
     for key, component in get_mapping_items_by_key_order(tensor_dict):
-        param_element_num = int(torch.prod(component.shape).item())
+        param_element_num = component.numel()
         result[key] = tensor[bias : bias + param_element_num].view(*component.shape)
         bias += param_element_num
     assert bias == tensor.shape[0]
