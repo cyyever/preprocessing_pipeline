@@ -1,5 +1,3 @@
-import dataclasses
-import functools
 from collections.abc import Callable, Iterable
 from typing import Any
 
@@ -46,45 +44,22 @@ class __RecursiveCheckPoint:
 
 
 def recursive_tensor_op(data: Any, fun: Callable[..., Any], **kwargs: Any) -> Any:
-    if "numpy" in str(type(data)):
-        return data
-    match data:
-        case __RecursiveCheckPoint():
-            if kwargs.pop("__check_recursive_point", False):
-                return fun(data.data, **kwargs)
-            return data
-        case torch.Tensor():
-            if kwargs.get("__check_recursive_point", False):
-                return data
-            return fun(data, **kwargs)
-        case list():
-            return [recursive_tensor_op(element, fun, **kwargs) for element in data]
-        case tuple():
-            return tuple(
-                recursive_tensor_op(element, fun, **kwargs) for element in data
-            )
-        case functools.partial():
-            return functools.partial(
-                data.func,
-                *recursive_tensor_op(data.args, fun, **kwargs),
-                **recursive_tensor_op(data.keywords, fun, **kwargs),
-            )
-    if hasattr(data, "items"):
-        return {k: recursive_tensor_op(v, fun, **kwargs) for k, v in data.items()}
-    try:
-        for field in dataclasses.fields(data):
-            setattr(
-                data,
-                field.name,
-                recursive_tensor_op(getattr(data, field.name), fun, **kwargs),
-            )
-        return data
-    # pylint: disable=broad-exception-caught
-    except BaseException:
-        pass
-    if hasattr(data, "data"):
-        data.data = recursive_tensor_op(data.data, fun, **kwargs)
-    return data
+    check_recursive_point = kwargs.pop("__check_recursive_point", False)
+
+    def wrapper(data: Any) -> Expected:
+        if "numpy" in str(type(data)):
+            return Expected.ok(data)
+        if isinstance(data, __RecursiveCheckPoint):
+            if check_recursive_point:
+                return Expected.ok(fun(data.data, **kwargs))
+            return Expected.ok(data)
+        if isinstance(data, torch.Tensor):
+            if check_recursive_point:
+                return Expected.ok(data)
+            return Expected.ok(fun(data, **kwargs))
+        return Expected.not_ok()
+
+    return recursive_mutable_op(data, wrapper)
 
 
 def tensor_to[T](
