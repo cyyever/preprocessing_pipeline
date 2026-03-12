@@ -21,7 +21,10 @@ def check_signal(signum: int) -> bool:
 
 
 def combine_handle(
-    handler1: SignalHandler, handler2: SignalHandler, signum: int, frame: types.FrameType | None
+    handler1: SignalHandler,
+    handler2: SignalHandler,
+    signum: int,
+    frame: types.FrameType | None,
 ) -> None:
     handler1(signum, frame)
     handler2(signum, frame)

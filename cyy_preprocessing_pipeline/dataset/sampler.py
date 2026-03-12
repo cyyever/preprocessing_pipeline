@@ -30,7 +30,9 @@ class DatasetSampler:
 
     @functools.cached_property
     def label_sample_dict(self) -> dict[Any, set[int]]:
-        label_sample_dict: collections.defaultdict[Any, set[int]] = collections.defaultdict(set)
+        label_sample_dict: collections.defaultdict[Any, set[int]] = (
+            collections.defaultdict(set)
+        )
         for index, labels in self.sample_label_dict.items():
             for label in labels:
                 label_sample_dict[label].add(index)

@@ -13,7 +13,7 @@ class MatchWithContext:
     context: str
 
 
-@functools.lru_cache(maxsize=None)
+@functools.cache
 def _compile(pattern: str) -> re.Pattern[str]:
     return re.compile(pattern)
 
