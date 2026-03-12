@@ -70,21 +70,12 @@ def tensor_to[T](
             if check_slowdown:
                 device = kwargs.get("device")
                 if (
-                    str(data.device) == "cpu"
-                    and device is not None
+                    device is not None
                     and str(device) != str(data.device)
+                    and not non_blocking
                 ):
-                    if not non_blocking:
-                        raise RuntimeError(
-                            "copy is blocking",
-                        )
-                else:
-                    if device is not None and not kwargs.get("non_blocking", True):
-                        raise RuntimeError(
-                            "device to device copy is blocking",
-                        )
-                assert device is None or str(device) != str(data.device)
-            return Expected.ok(data.to(**kwargs))
+                    raise RuntimeError("copy is blocking")
+            return Expected.ok(data.to(non_blocking=non_blocking, **kwargs))
         return Expected.not_ok()
 
     return recursive_mutable_op(data, fun)

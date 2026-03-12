@@ -3,6 +3,7 @@ from collections.abc import Iterable, Sequence
 import bs4
 from cyy_naive_lib import Expected
 
+from .bio import BIOSpan, BIOTokenList, CanonicalTags, html2bio, json2bio, make_bio_span
 from .parse_score import parse_score
 from .regex_parsing import (
     MatchWithContext,
@@ -96,6 +97,12 @@ def parse_html_tag_strict(html: str, tag: str) -> Expected[list[str]]:
 __all__ = [
     "approximately_match_token",
     "approximately_match_tokens",
+    "BIOSpan",
+    "BIOTokenList",
+    "CanonicalTags",
+    "html2bio",
+    "json2bio",
+    "make_bio_span",
     "parse_html_tag",
     "parse_html_tag_strict",
     "parse_floats",
