@@ -1,11 +1,9 @@
 import json
-from collections.abc import Iterable
 
 from .types import BIOTokenList, CanonicalTags, make_bio_span
 
 
-def json2bio(json_text: str, canonical_tags: Iterable[str]) -> BIOTokenList:
-    ct = CanonicalTags(canonical_tags)
+def json2bio(json_text: str, canonical_tags: CanonicalTags) -> BIOTokenList:
     entities = json.loads(json_text)
 
     assert isinstance(entities, list)
@@ -14,7 +12,7 @@ def json2bio(json_text: str, canonical_tags: Iterable[str]) -> BIOTokenList:
     for ent in entities:
         if not isinstance(ent, dict):
             continue
-        tag = ct.match(ent.get("entity", ""))
+        tag = canonical_tags.match(ent.get("entity", ""))
         text = ent.get("text", "")
         if not tag or not text:
             continue

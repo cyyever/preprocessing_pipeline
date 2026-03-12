@@ -15,12 +15,11 @@ def tokenize(txt: str) -> list[str]:
 
 def html2bio(
     html: str,
-    canonical_tags,
+    canonical_tags: CanonicalTags,
 ) -> BIOTokenList:
     tokens: BIOTokenList = []
     if not html:
         return []
-    ct = CanonicalTags(canonical_tags)
 
     soup = bs4.BeautifulSoup(html, "html.parser")
     last_tag_text = None
@@ -46,7 +45,7 @@ def html2bio(
                     continue
                 tag: str | None = None
                 for c in classes:
-                    tag = ct.match(c)
+                    tag = canonical_tags.match(c)
                     if tag is not None:
                         break
                 if tag is None:
