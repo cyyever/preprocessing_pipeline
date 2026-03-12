@@ -1,5 +1,3 @@
-from collections.abc import Iterable
-
 import bs4
 
 from .types import BIOTokenList, CanonicalTags, make_bio_span
@@ -38,7 +36,7 @@ def html2bio(
                 if child.name.lower() != "span":
                     tokens += words
                     continue
-                classes: str | Iterable[str] = child.attrs.get("class", [])
+                classes: str | list[str] = child.attrs.get("class", [])
                 classes = [classes] if isinstance(classes, str) else list(classes)
                 if not classes:
                     tokens += words

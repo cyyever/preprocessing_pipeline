@@ -1,5 +1,3 @@
-from collections.abc import Iterable, Sequence
-
 import bs4
 from cyy_naive_lib import Expected
 
@@ -20,7 +18,7 @@ def approximately_match_token(a: str, b: str, threshold: float = 0.9) -> bool:
 
 
 def approximately_match_tokens(
-    tokens: list[str], pred_tokens: list[str | tuple[Sequence[str], Iterable[str]]]
+    tokens: list[str], pred_tokens: BIOTokenList
 ) -> list[str | None]:
     # case sensitive
     if not tokens:
