@@ -18,4 +18,5 @@ class CanonicalTags:
 
 
 def make_bio_span(words: list[str], tag: str) -> BIOSpan:
+    assert words
     return (words, [f"B-{tag}"] + [f"I-{tag}"] * (len(words) - 1))
